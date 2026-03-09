@@ -22,11 +22,35 @@
             </div>
         </div>
         <nav class="side-nav">
-            <a href="#" class="nav-link">➕ Novo Lançamento</a>
+            <a href="#" class="nav-link" id="linkAddGain" style="color: var(--accent); font-weight: 800;">💰 Lançar Ganho Semanal</a>
+            <a href="#" class="nav-link" id="linkAddExpense">💸 Lançar Despesa</a>
             <a href="#" class="nav-link">🎯 Metas de Economia</a>
             <a href="#" class="nav-link">📊 Relatórios Mensais</a>
             <a href="#" class="nav-link">⚙️ Configurações</a>
         </nav>
+    </div>
+
+    <div id="incomeModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2 style="color: var(--accent)">💰 Registrar Ganho</h2>
+            <p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 20px;">Recebeu algo hoje? Lança aqui!</p>
+            
+            <div class="input-group">
+                <label>Valor Recebido (R$)</label>
+                <input type="number" id="incomeValue" placeholder="0,00" inputmode="decimal" style="border-color: var(--accent-dim)">
+            </div>
+
+            <div class="input-group">
+                <label>Origem / Cliente</label>
+                <input type="text" id="incomeDesc" placeholder="Ex: Job App Barbearia, Freelance...">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
+                <button class="btn-confirm" id="saveIncome" style="background: var(--accent); color: #000;">Somar ao Saldo</button>
+            </div>
+        </div>
     </div>
 
     <div id="entryModal" class="modal-bottom">

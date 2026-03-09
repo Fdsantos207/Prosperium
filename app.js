@@ -1,5 +1,5 @@
-/* FINANZA PRIME - ENGINE (V.1.6)
-   Clean Version: Optimized for Sidebar Navigation
+/* FINANZA PRIME - ENGINE (V.1.7)
+   Especialista: Fluxo de Caixa Semanal e Gestão de Ganhos
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
@@ -53,17 +53,6 @@ const renderGoals = () => {
 };
 
 // 3. LÓGICA DE MODAIS
-const openEntryModal = (type) => {
-    const modal = document.getElementById('entryModal');
-    const overlay = document.querySelector('.menu-overlay');
-    if (!modal || !overlay) return;
-
-    document.getElementById('modalTitle').innerText = type === 'receita' ? 'Nova Receita' : 'Nova Despesa';
-    modal.classList.add('active');
-    overlay.classList.add('active');
-    document.body.classList.add('menu-open');
-};
-
 const closeAllModals = () => {
     const modals = document.querySelectorAll('.modal-bottom');
     const sideMenu = document.getElementById('sideMenu');
@@ -75,6 +64,19 @@ const closeAllModals = () => {
     document.body.classList.remove('menu-open');
 };
 
+const openEntryModal = (type) => {
+    closeAllModals();
+    const modalId = type === 'ganho' ? 'incomeModal' : 'entryModal';
+    const modal = document.getElementById(modalId);
+    const overlay = document.querySelector('.menu-overlay');
+    
+    if (modal && overlay) {
+        modal.classList.add('active');
+        overlay.classList.add('active');
+        document.body.classList.add('menu-open');
+    }
+};
+
 window.setCategory = (cat) => {
     selectedCategory = cat;
     document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -83,21 +85,30 @@ window.setCategory = (cat) => {
     });
 };
 
-// 4. PERSISTÊNCIA (LOCAL STORAGE)
+// 4. PERSISTÊNCIA E MATEMÁTICA
+const atualizarSaldoInterface = (valor, operacao) => {
+    const saldoEl = document.getElementById('main-balance');
+    let saldoLimpo = parseFloat(saldoEl.innerText.replace('R$ ', '').replace(/\./g, '').replace(',', '.'));
+    
+    if (operacao === 'soma') saldoLimpo += valor;
+    else saldoLimpo -= valor;
+
+    const novoSaldoText = `R$ ${saldoLimpo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    saldoEl.innerText = novoSaldoText;
+    localStorage.setItem('finanza_saldo', novoSaldoText);
+};
+
 const carregarDadosSalvos = () => {
     const nomeSalvo = localStorage.getItem('finanza_nome');
     const saldoSalvo = localStorage.getItem('finanza_saldo');
-
     if (nomeSalvo) {
         document.querySelector('.user-name').innerText = nomeSalvo;
         document.querySelector('.user-profile-side h3').innerText = nomeSalvo;
     }
-    if (saldoSalvo) {
-        document.getElementById('main-balance').innerText = saldoSalvo;
-    }
+    if (saldoSalvo) document.getElementById('main-balance').innerText = saldoSalvo;
 };
 
-// 5. INICIALIZAÇÃO E EVENTOS
+// 5. INICIALIZAÇÃO
 document.addEventListener('DOMContentLoaded', () => {
     carregarDadosSalvos();
     renderChart();
@@ -107,61 +118,74 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.className = 'menu-overlay';
     document.body.appendChild(overlay);
 
-    const sideMenu = document.getElementById('sideMenu');
+    // Seletores
     const openMenu = document.getElementById('openMenu');
-    const closeMenu = document.getElementById('closeMenu');
+    const sideMenu = document.getElementById('sideMenu');
+    const linkAddGain = document.getElementById('linkAddGain');
+    const linkAddExpense = document.getElementById('linkAddExpense');
+    const saveIncome = document.getElementById('saveIncome');
     const saveEntry = document.getElementById('saveEntry');
-    
-    // Links do Menu Lateral
-    const navLinks = document.querySelectorAll('.nav-link');
-    const configLink = navLinks[navLinks.length - 1]; // Último: Configurações
-    const entryLink = navLinks[0]; // Primeiro: Minhas Contas (usaremos como atalho de lançamento)
-
-    const configModal = document.getElementById('configModal');
-    const saveConfig = document.getElementById('saveConfig');
+    const configLink = document.querySelector('.side-nav a:last-child'); // Configurações
 
     overlay.onclick = closeAllModals;
-    if (closeMenu) closeMenu.onclick = closeAllModals;
 
-    if (openMenu) {
-        openMenu.onclick = () => {
-            sideMenu.classList.add('active');
-            overlay.classList.add('active');
-            document.body.classList.add('menu-open');
-        };
-    }
+    // Handlers do Menu
+    if (openMenu) openMenu.onclick = () => {
+        sideMenu.classList.add('active');
+        overlay.classList.add('active');
+        document.body.classList.add('menu-open');
+    };
 
-    // Ação do primeiro link (Minhas Contas) abre o Modal de Lançamento
-    if (entryLink) {
-        entryLink.onclick = (e) => {
-            e.preventDefault();
-            closeAllModals();
-            openEntryModal('despesa');
-        };
-    }
+    if (linkAddGain) linkAddGain.onclick = (e) => { e.preventDefault(); openEntryModal('ganho'); };
+    if (linkAddExpense) linkAddExpense.onclick = (e) => { e.preventDefault(); openEntryModal('despesa'); };
 
     if (configLink) {
         configLink.onclick = (e) => {
             e.preventDefault();
             closeAllModals();
-            configModal.classList.add('active');
+            document.getElementById('configModal').classList.add('active');
             overlay.classList.add('active');
         };
     }
 
+    // Salvar Ganho (💰)
+    if (saveIncome) {
+        saveIncome.onclick = () => {
+            const input = document.getElementById('incomeValue');
+            const valor = parseFloat(input.value);
+            if (valor > 0) {
+                atualizarSaldoInterface(valor, 'soma');
+                input.value = '';
+                closeAllModals();
+            } else alert("Valor inválido");
+        };
+    }
+
+    // Salvar Despesa (💸)
+    if (saveEntry) {
+        saveEntry.onclick = () => {
+            const input = document.getElementById('inputValue');
+            const valor = parseFloat(input.value);
+            if (valor > 0) {
+                atualizarSaldoInterface(valor, 'subtrai');
+                input.value = '';
+                closeAllModals();
+            } else alert("Valor inválido");
+        };
+    }
+
+    // Lógica de Configurações
+    const saveConfig = document.getElementById('saveConfig');
     if (saveConfig) {
         saveConfig.onclick = () => {
-            const novoNome = document.getElementById('configName').value;
-            const novoSaldo = document.getElementById('configBalance').value;
-
-            if (novoNome) {
-                document.querySelector('.user-name').innerText = novoNome;
-                document.querySelector('.user-profile-side h3').innerText = novoNome;
-                localStorage.setItem('finanza_nome', novoNome);
+            const nome = document.getElementById('configName').value;
+            const saldo = document.getElementById('configBalance').value;
+            if (nome) {
+                document.querySelector('.user-name').innerText = nome;
+                localStorage.setItem('finanza_nome', nome);
             }
-
-            if (novoSaldo) {
-                const formatado = `R$ ${parseFloat(novoSaldo).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            if (saldo) {
+                const formatado = `R$ ${parseFloat(saldo).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
                 document.getElementById('main-balance').innerText = formatado;
                 localStorage.setItem('finanza_saldo', formatado);
             }
@@ -169,50 +193,22 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    if (saveEntry) {
-        saveEntry.onclick = () => {
-            const valorInput = document.getElementById('inputValue');
-            const valor = parseFloat(valorInput.value);
-            if (!valor || valor <= 0) return alert("Valor inválido.");
-
-            const saldoEl = document.getElementById('main-balance');
-            let saldoLimpo = parseFloat(saldoEl.innerText.replace('R$ ', '').replace(/\./g, '').replace(',', '.'));
-            
-            if (document.getElementById('modalTitle').innerText === 'Nova Receita') {
-                saldoLimpo += valor;
-            } else {
-                saldoLimpo -= valor;
-            }
-
-            const novoSaldoText = `R$ ${saldoLimpo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-            saldoEl.innerText = novoSaldoText;
-            localStorage.setItem('finanza_saldo', novoSaldoText);
-            
-            valorInput.value = '';
-            document.getElementById('inputDesc').value = '';
-            closeAllModals();
-        };
-    }
-
+    // Voz
     const voiceBtn = document.getElementById('voiceBtn');
     if (voiceBtn) {
         voiceBtn.onclick = () => {
             const SDK = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SDK) return alert("Voz não suportada.");
+            if (!SDK) return;
             const rec = new SDK();
             rec.lang = 'pt-BR';
-            rec.onstart = () => { voiceBtn.style.background = '#ff4d4d'; voiceBtn.innerHTML = '⚡'; };
+            rec.onstart = () => { voiceBtn.style.background = '#ff4d4d'; voiceBtn.innerHTML = '...'; };
             rec.onresult = (e) => {
                 const text = e.results[0][0].transcript.toLowerCase();
                 voiceBtn.style.background = '#00ff88';
                 voiceBtn.innerHTML = '🎙️';
-                if (text.includes('receita')) openEntryModal('receita');
-                else {
-                    openEntryModal('despesa');
-                    document.getElementById('inputDesc').value = text;
-                }
+                if (text.includes('ganhei') || text.includes('receita')) openEntryModal('ganho');
+                else openEntryModal('despesa');
             };
-            rec.onerror = () => { voiceBtn.style.background = '#00ff88'; voiceBtn.innerHTML = '🎙️'; };
             rec.start();
         };
     }
