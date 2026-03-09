@@ -1,5 +1,5 @@
-/* FINANZA PRIME - ENGINE (V.1.3)
-   Core: Charts, Sidebar, Voice AI & Data Entry
+/* FINANZA PRIME - ENGINE (V.1.4)
+   Core: Charts, Sidebar, Voice AI, Data Entry & Persistent Config
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
@@ -52,7 +52,7 @@ const renderGoals = () => {
     }).join('');
 };
 
-// 3. LÓGICA DO MODAL DE ENTRADA
+// 3. LÓGICA DE MODAIS
 const openEntryModal = (type) => {
     const modal = document.getElementById('entryModal');
     const overlay = document.querySelector('.menu-overlay');
@@ -65,17 +65,16 @@ const openEntryModal = (type) => {
 };
 
 const closeAllModals = () => {
-    const modal = document.getElementById('entryModal');
+    const modals = document.querySelectorAll('.modal-bottom');
     const sideMenu = document.getElementById('sideMenu');
     const overlay = document.querySelector('.menu-overlay');
     
-    if (modal) modal.classList.remove('active');
+    modals.forEach(m => m.classList.remove('active'));
     if (sideMenu) sideMenu.classList.remove('active');
     if (overlay) overlay.classList.remove('active');
     document.body.classList.remove('menu-open');
 };
 
-// Função Global para o HTML encontrar
 window.setCategory = (cat) => {
     selectedCategory = cat;
     document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -84,60 +83,93 @@ window.setCategory = (cat) => {
     });
 };
 
-// 4. INICIALIZAÇÃO E EVENTOS
+// 4. PERSISTÊNCIA (LOCAL STORAGE)
+const carregarDadosSalvos = () => {
+    const nomeSalvo = localStorage.getItem('finanza_nome');
+    const saldoSalvo = localStorage.getItem('finanza_saldo');
+
+    if (nomeSalvo) {
+        document.querySelector('.user-name').innerText = nomeSalvo;
+        document.querySelector('.user-profile-side h3').innerText = nomeSalvo;
+    }
+    if (saldoSalvo) {
+        document.getElementById('main-balance').innerText = saldoSalvo;
+    }
+};
+
+// 5. INICIALIZAÇÃO E EVENTOS
 document.addEventListener('DOMContentLoaded', () => {
+    carregarDadosSalvos();
     renderChart();
     renderGoals();
 
-    // -- Overlay do Sistema --
     const overlay = document.createElement('div');
     overlay.className = 'menu-overlay';
     document.body.appendChild(overlay);
 
-    // -- Elementos do Menu e Modal --
     const sideMenu = document.getElementById('sideMenu');
     const openMenu = document.getElementById('openMenu');
     const closeMenu = document.getElementById('closeMenu');
-    const closeModal = document.getElementById('closeModal');
     const saveEntry = document.getElementById('saveEntry');
+    const configLink = document.querySelector('.side-nav a:last-child');
+    const configModal = document.getElementById('configModal');
+    const saveConfig = document.getElementById('saveConfig');
 
-    // -- Listeners de Fechamento --
-    [overlay, closeMenu, closeModal].forEach(btn => {
-        if (btn) btn.addEventListener('click', closeAllModals);
-    });
+    // Listeners Globais
+    overlay.onclick = closeAllModals;
+    if (closeMenu) closeMenu.onclick = closeAllModals;
 
-    // -- Abrir Menu Lateral --
+    // Menu Lateral
     if (openMenu) {
-        openMenu.addEventListener('click', () => {
+        openMenu.onclick = () => {
             sideMenu.classList.add('active');
             overlay.classList.add('active');
             document.body.classList.add('menu-open');
-        });
+        };
     }
 
-    // -- Atalho: Clicar no cartão na Tab Bar abre Despesa --
-    const tabCards = document.querySelectorAll('.tab-item')[1];
-    if (tabCards) {
-        tabCards.addEventListener('click', (e) => {
+    // Abrir Configurações
+    if (configLink) {
+        configLink.onclick = (e) => {
             e.preventDefault();
-            openEntryModal('despesa');
-        });
+            closeAllModals();
+            configModal.classList.add('active');
+            overlay.classList.add('active');
+        };
     }
 
-    // -- Lógica de Salvar --
+    // Salvar Configurações
+    if (saveConfig) {
+        saveConfig.onclick = () => {
+            const novoNome = document.getElementById('configName').value;
+            const novoSaldo = document.getElementById('configBalance').value;
+
+            if (novoNome) {
+                document.querySelector('.user-name').innerText = novoNome;
+                document.querySelector('.user-profile-side h3').innerText = novoNome;
+                localStorage.setItem('finanza_nome', novoNome);
+            }
+
+            if (novoSaldo) {
+                const formatado = `R$ ${parseFloat(novoSaldo).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                document.getElementById('main-balance').innerText = formatado;
+                localStorage.setItem('finanza_saldo', formatado);
+            }
+
+            closeAllModals();
+        };
+    }
+
+    // Lógica de Salvar Transação
     if (saveEntry) {
         saveEntry.onclick = () => {
             const valorInput = document.getElementById('inputValue');
-            const descInput = document.getElementById('inputDesc');
             const valor = parseFloat(valorInput.value);
 
-            if (!valor || valor <= 0) {
-                alert("Insira um valor válido.");
-                return;
-            }
+            if (!valor || valor <= 0) return alert("Valor inválido.");
 
-            const saldoAtualEl = document.getElementById('main-balance');
-            let saldoLimpo = parseFloat(saldoAtualEl.innerText.replace('R$ ', '').replace(/\./g, '').replace(',', '.'));
+            const saldoEl = document.getElementById('main-balance');
+            let saldoLimpo = parseFloat(saldoEl.innerText.replace('R$ ', '').replace(/\./g, '').replace(',', '.'));
             
             if (document.getElementById('modalTitle').innerText === 'Nova Receita') {
                 saldoLimpo += valor;
@@ -145,54 +177,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 saldoLimpo -= valor;
             }
 
-            // Atualiza Interface
-            saldoAtualEl.innerText = `R$ ${saldoLimpo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            const novoSaldoText = `R$ ${saldoLimpo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            saldoEl.innerText = novoSaldoText;
+            localStorage.setItem('finanza_saldo', novoSaldoText);
             
-            // Limpa e Fecha
             valorInput.value = '';
-            descInput.value = '';
             closeAllModals();
-            
-            // Feedback tátil sutil
-            if (navigator.vibrate) navigator.vibrate(10);
         };
     }
 
-    // -- Lógica de Voz --
+    // Voz
     const voiceBtn = document.getElementById('voiceBtn');
     if (voiceBtn) {
         voiceBtn.onclick = () => {
-            const SpeechSDK = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechSDK) return alert("Voz não suportada.");
-            
-            const recognition = new SpeechSDK();
-            recognition.lang = 'pt-BR';
-            
-            recognition.onstart = () => {
-                voiceBtn.style.background = '#ff4d4d';
-                voiceBtn.innerHTML = '⚡';
-            };
-            
-            recognition.onresult = (e) => {
-                const transcript = e.results[0][0].transcript.toLowerCase();
+            const SDK = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SDK) return alert("Voz não suportada.");
+            const rec = new SDK();
+            rec.lang = 'pt-BR';
+            rec.onstart = () => { voiceBtn.style.background = '#ff4d4d'; voiceBtn.innerHTML = '⚡'; };
+            rec.onresult = (e) => {
+                const text = e.results[0][0].transcript.toLowerCase();
                 voiceBtn.style.background = '#00ff88';
                 voiceBtn.innerHTML = '🎙️';
-
-                // Inteligência: Se falar "receita", abre o modal de receita
-                if (transcript.includes('receita') || transcript.includes('ganhei')) {
-                    openEntryModal('receita');
-                } else {
+                if (text.includes('receita')) openEntryModal('receita');
+                else {
                     openEntryModal('despesa');
-                    document.getElementById('inputDesc').value = transcript;
+                    document.getElementById('inputDesc').value = text;
                 }
             };
-
-            recognition.onerror = () => {
-                voiceBtn.style.background = '#00ff88';
-                voiceBtn.innerHTML = '🎙️';
-            };
-            
-            recognition.start();
+            rec.onerror = () => { voiceBtn.style.background = '#00ff88'; voiceBtn.innerHTML = '🎙️'; };
+            rec.start();
         };
     }
 });

@@ -42,6 +42,33 @@
     </div>
 </div>
 
+<div id="configModal" class="modal-bottom">
+    <div class="modal-handle"></div>
+    <div class="modal-content">
+        <h2>Ajustes da Conta</h2>
+        
+        <div class="input-group">
+            <label>Seu Nome</label>
+            <input type="text" id="configName" placeholder="Ex: Danilo">
+        </div>
+
+        <div class="input-group">
+            <label>Saldo Inicial Atual (R$)</label>
+            <input type="number" id="configBalance" placeholder="0,00">
+        </div>
+
+        <div class="input-group">
+            <label>Teto de Gastos Mensal (R$)</label>
+            <input type="number" id="configLimit" placeholder="Ex: 3000">
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
+            <button class="btn-confirm" id="saveConfig">Salvar Ajustes</button>
+        </div>
+    </div>
+</div>
+
 <body>
 
     <div id="sideMenu" class="sidebar">
