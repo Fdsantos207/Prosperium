@@ -1,5 +1,5 @@
-/* FINANZA PRIME - ENGINE (V.1.8)
-   Especialista: Gestão de Ganhos e Adiantamentos (Vales Diários)
+/* FINANZA PRIME - ENGINE (V.1.9)
+   Especialista: Categorias Inteligentes e Notas Descritivas
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
@@ -47,7 +47,7 @@ const renderGoals = () => {
     }).join('');
 };
 
-// 3. LÓGICA DE MODAIS
+// 3. LÓGICA DE MODAIS E CATEGORIAS
 const closeAllModals = () => {
     const modals = document.querySelectorAll('.modal-bottom');
     const sideMenu = document.getElementById('sideMenu');
@@ -76,12 +76,24 @@ const openEntryModal = (type) => {
     }
 };
 
+// FUNÇÃO DE CATEGORIA COM LÓGICA DE NOTA
 window.setCategory = (cat) => {
     selectedCategory = cat;
+    const noteGroup = document.getElementById('noteGroup');
+    const inputNote = document.getElementById('inputNote');
+    
     document.querySelectorAll('.cat-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.innerText.includes(cat)) btn.classList.add('active');
+        if (btn.getAttribute('data-cat') === cat) btn.classList.add('active');
     });
+
+    if (cat === 'Outros') {
+        noteGroup.style.display = 'block';
+        inputNote.focus();
+    } else {
+        noteGroup.style.display = 'none';
+        inputNote.value = ''; 
+    }
 };
 
 // 4. PERSISTÊNCIA E MATEMÁTICA
@@ -117,20 +129,18 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.className = 'menu-overlay';
     document.body.appendChild(overlay);
 
-    // Seletores
     const openMenu = document.getElementById('openMenu');
     const sideMenu = document.getElementById('sideMenu');
     const linkAddGain = document.getElementById('linkAddGain');
-    const linkAddAdvance = document.getElementById('linkAddAdvance'); // Novo Link
+    const linkAddAdvance = document.getElementById('linkAddAdvance');
     const linkAddExpense = document.getElementById('linkAddExpense');
     
     const saveIncome = document.getElementById('saveIncome');
-    const saveAdvance = document.getElementById('saveAdvance'); // Novo Botão
+    const saveAdvance = document.getElementById('saveAdvance');
     const saveEntry = document.getElementById('saveEntry');
 
     overlay.onclick = closeAllModals;
 
-    // Handlers do Menu
     if (openMenu) openMenu.onclick = () => {
         sideMenu.classList.add('active');
         overlay.classList.add('active');
@@ -141,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (linkAddAdvance) linkAddAdvance.onclick = (e) => { e.preventDefault(); openEntryModal('adiantamento'); };
     if (linkAddExpense) linkAddExpense.onclick = (e) => { e.preventDefault(); openEntryModal('despesa'); };
 
-    // Salvar Ganho (💰)
     if (saveIncome) {
         saveIncome.onclick = () => {
             const input = document.getElementById('incomeValue');
@@ -154,40 +163,45 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Salvar Adiantamento (⚡)
     if (saveAdvance) {
         saveAdvance.onclick = () => {
             const input = document.getElementById('advanceValue');
             const valor = parseFloat(input.value);
             if (valor > 0) {
                 atualizarSaldoInterface(valor, 'soma');
-                
-                // Salva o registro de vale para histórico futuro
                 const vales = JSON.parse(localStorage.getItem('finanza_vales') || "[]");
                 vales.push({ data: new Date().toLocaleDateString(), valor: valor });
                 localStorage.setItem('finanza_vales', JSON.stringify(vales));
-
                 input.value = '';
                 closeAllModals();
-                alert("Vale registrado! Dinheiro somado ao saldo atual.");
             }
         };
     }
 
-    // Salvar Despesa (💸)
     if (saveEntry) {
         saveEntry.onclick = () => {
-            const input = document.getElementById('inputValue');
-            const valor = parseFloat(input.value);
-            if (valor > 0) {
-                atualizarSaldoInterface(valor, 'subtrai');
-                input.value = '';
-                closeAllModals();
+            const inputVal = document.getElementById('inputValue');
+            const inputNote = document.getElementById('inputNote');
+            const valor = parseFloat(inputVal.value);
+
+            if (!valor || valor <= 0) return alert("Insira um valor válido.");
+
+            // Validação Sênior: Se for outros, nota é obrigatória
+            if (selectedCategory === 'Outros' && inputNote.value.trim() === "") {
+                alert("Por favor, descreva o que é esse gasto em 'Outros'.");
+                return;
             }
+
+            atualizarSaldoInterface(valor, 'subtrai');
+            
+            // Limpa tudo
+            inputVal.value = '';
+            inputNote.value = '';
+            document.getElementById('noteGroup').style.display = 'none';
+            closeAllModals();
         };
     }
 
-    // Lógica de Configurações
     const saveConfig = document.getElementById('saveConfig');
     if (saveConfig) {
         saveConfig.onclick = () => {
@@ -206,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Voz
     const voiceBtn = document.getElementById('voiceBtn');
     if (voiceBtn) {
         voiceBtn.onclick = () => {
@@ -220,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 voiceBtn.style.background = '#00ff88';
                 voiceBtn.innerHTML = '🎙️';
                 if (text.includes('ganhei')) openEntryModal('ganho');
-                else if (text.includes('adiantamento') || text.includes('vale')) openEntryModal('adiantamento');
+                else if (text.includes('adiantamento')) openEntryModal('adiantamento');
                 else openEntryModal('despesa');
             };
             rec.start();
