@@ -1,50 +1,36 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0a0a0a">
-    <title>Finanza Prime | Elite PWA</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
-<body>
-
-    <header class="premium-header">
-        <div class="user-info">
-            <div class="greeting">
-                <p class="label-welcome">Bem-vindo de volta,</p>
-                <h2 class="user-name">Danilo</h2>
-            </div>
+<div id="sideMenu" class="sidebar">
+    <div class="sidebar-header">
+        <button id="closeMenu" class="close-btn">&times;</button>
+        <div class="user-profile-side">
             <div class="avatar"></div>
+            <h3>Danilo</h3>
         </div>
-
-        <div class="balance-card">
-            <p class="balance-label">Patrimônio Total</p>
-            <h1 class="balance-value" id="main-balance">R$ 42.180,50</h1>
-            <span class="trend">▲ 8.4% este mês</span>
-        </div>
-    </header>
-
-    <h3 class="section-title">Análise de Gastos</h3>
-    <div class="chart-container" id="chart"></div>
-
-    <h3 class="section-title">Suas Metas</h3>
-    <div class="goals-container" id="goals"></div>
-
-    <button class="voice-fab" id="voiceBtn">🎙️</button>
-
-    <nav class="tab-bar">
-        <a href="#" class="tab-item active">●</a>
-        <a href="#" class="tab-item">💳</a>
-        <a href="#" class="tab-item">🎯</a>
-        <a href="#" class="tab-item">⚙️</a>
+    </div>
+    <nav class="side-nav">
+        <a href="#" class="nav-link">💳 Minhas Contas</a>
+        <a href="#" class="nav-link">🎯 Metas de Economia</a>
+        <a href="#" class="nav-link">📊 Relatórios Mensais</a>
+        <a href="#" class="nav-link">🏷️ Categorias</a>
+        <a href="#" class="nav-link">⚙️ Configurações</a>
     </nav>
+</div>
 
-    <script src="app.js"></script>
-</body>
-</html>
+<header class="premium-header">
+    <div class="user-info">
+        <div class="greeting">
+            <button id="openMenu" class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <h2 class="user-name">Finanza Prime</h2>
+        </div>
+        <div class="avatar"></div>
+    </div>
+
+    <div class="balance-card">
+        <p class="balance-label">Patrimônio Total</p>
+        <h1 class="balance-value" id="main-balance">R$ 42.180,50</h1>
+        <span class="trend">▲ 8.4% este mês</span>
+    </div>
+</header>

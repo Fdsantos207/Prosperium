@@ -62,3 +62,27 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.start();
     };
 });
+
+// Adicione isso ao final do arquivo app.js ou dentro do DOMContentLoaded
+const sideMenu = document.getElementById('sideMenu');
+const openMenu = document.getElementById('openMenu');
+const closeMenu = document.getElementById('closeMenu');
+
+// Criar overlay dinamicamente
+const overlay = document.createElement('div');
+overlay.className = 'menu-overlay';
+document.body.appendChild(overlay);
+
+const toggleMenu = () => {
+    sideMenu.classList.toggle('active');
+    overlay.classList.toggle('active');
+};
+
+openMenu.addEventListener('click', toggleMenu);
+closeMenu.addEventListener('click', toggleMenu);
+overlay.addEventListener('click', toggleMenu);
+
+// Fechar menu ao clicar em um link
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', toggleMenu);
+});

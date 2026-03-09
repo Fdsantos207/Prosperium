@@ -56,3 +56,47 @@ body { background-color: var(--bg-color); color: var(--text-main); padding-botto
 }
 .tab-item { color: var(--text-dim); font-size: 1.4rem; text-decoration: none; }
 .tab-item.active { color: var(--accent); }
+
+/* Botão Hambúrguer */
+.hamburger {
+    background: none; border: none; cursor: pointer;
+    display: flex; flex-direction: column; gap: 5px; padding: 10px 15px 10px 0;
+}
+.hamburger span {
+    display: block; width: 22px; height: 2px; background: var(--text-main);
+    transition: 0.3s; border-radius: 2px;
+}
+
+/* Sidebar Estilo Premium */
+.sidebar {
+    position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
+    background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px);
+    z-index: 1000; transition: 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    border-right: 1px solid var(--glass); padding: 40px 25px;
+}
+
+.sidebar.active { left: 0; box-shadow: 20px 0 50px rgba(0,0,0,0.8); }
+
+.sidebar-header { margin-bottom: 40px; }
+.close-btn { 
+    background: none; border: none; color: var(--text-dim); 
+    font-size: 2rem; position: absolute; top: 20px; right: 20px; 
+}
+
+.user-profile-side { text-align: center; margin-top: 20px; }
+.user-profile-side .avatar { margin: 0 auto 15px; width: 60px; height: 60px; }
+
+.side-nav { display: flex; flex-direction: column; gap: 20px; }
+.nav-link { 
+    color: var(--text-main); text-decoration: none; font-size: 1.1rem;
+    font-weight: 400; padding: 10px 0; border-bottom: 1px solid var(--glass);
+    transition: 0.3s;
+}
+.nav-link:hover { color: var(--accent); padding-left: 10px; }
+
+/* Overlay (Fundo escuro quando menu abre) */
+.menu-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999; display: none;
+}
+.menu-overlay.active { display: block; }
