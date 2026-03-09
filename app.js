@@ -1,11 +1,11 @@
-/* PROSPERIUM - ENGINE (V.2.5)
+/* PROSPERIUM - ENGINE (V.3.0)
    Branding: Prosperium Elite
-   Features: PWA Install, Voice AI, Gain/Expense/Advance Management
+   Fix: Seletores de ID únicos para Menu Lateral
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
 let selectedCategory = 'Lazer';
-let deferredPrompt; // Para a instalação PWA
+let deferredPrompt; 
 
 const gastos = [
     { label: 'Seg', val: 40, color: '#333' },
@@ -149,19 +149,20 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Seletores
+    // SELETORES DE MENU (IDs ÚNICOS)
     const openMenu = document.getElementById('openMenu');
-    const closeMenu = document.getElementById('closeMenu');
     const sideMenu = document.getElementById('sideMenu');
+    
     const linkAddGain = document.getElementById('linkAddGain');
     const linkAddAdvance = document.getElementById('linkAddAdvance');
     const linkAddExpense = document.getElementById('linkAddExpense');
-    const configLink = document.querySelectorAll('.nav-link')[4]; // Configurações
+    const linkGoals = document.getElementById('linkGoals');
+    const linkConfig = document.getElementById('linkConfig');
 
     overlay.onclick = closeAllModals;
-    if (closeMenu) closeMenu.onclick = closeAllModals;
+    
+    // Atribui fechar para todos os botões de cancelar
     document.querySelectorAll('.btn-cancel').forEach(btn => btn.onclick = closeAllModals);
-    if (document.getElementById('closeModal')) document.getElementById('closeModal').onclick = closeAllModals;
 
     if (openMenu) openMenu.onclick = () => {
         sideMenu.classList.add('active');
@@ -169,12 +170,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('menu-open');
     };
 
+    // HANDLERS DO MENU LATERAL
     if (linkAddGain) linkAddGain.onclick = (e) => { e.preventDefault(); openEntryModal('ganho'); };
     if (linkAddAdvance) linkAddAdvance.onclick = (e) => { e.preventDefault(); openEntryModal('adiantamento'); };
     if (linkAddExpense) linkAddExpense.onclick = (e) => { e.preventDefault(); openEntryModal('despesa'); };
-    if (configLink) configLink.onclick = (e) => { e.preventDefault(); openEntryModal('config'); };
+    if (linkConfig) linkConfig.onclick = (e) => { e.preventDefault(); openEntryModal('config'); };
+    // O link de metas apenas fecha o menu por enquanto
+    if (linkGoals) linkGoals.onclick = (e) => { e.preventDefault(); closeAllModals(); };
 
-    // Salvar Ações
+    // SALVAR AÇÕES
     document.getElementById('saveIncome').onclick = () => {
         const val = parseFloat(document.getElementById('incomeValue').value);
         if (val > 0) { atualizarSaldoInterface(val, 'soma'); closeAllModals(); document.getElementById('incomeValue').value = ''; }
@@ -211,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeAllModals();
     };
 
-    // Voz
+    // VOZ
     const voiceBtn = document.getElementById('voiceBtn');
     if (voiceBtn) {
         voiceBtn.onclick = () => {
