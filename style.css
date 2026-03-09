@@ -290,3 +290,12 @@ body.menu-open {
 .modal-actions { display: flex; gap: 15px; }
 .btn-cancel { flex: 1; padding: 15px; border-radius: 12px; background: #333; color: white; border: none; }
 .btn-confirm { flex: 2; padding: 15px; border-radius: 12px; background: var(--accent); color: black; font-weight: 800; border: none; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#noteGroup {
+    transition: all 0.3s ease;
+}
