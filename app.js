@@ -1,5 +1,5 @@
-/* FINANZA PRIME - ENGINE (V.1.7)
-   Especialista: Fluxo de Caixa Semanal e Gestão de Ganhos
+/* FINANZA PRIME - ENGINE (V.1.8)
+   Especialista: Gestão de Ganhos e Adiantamentos (Vales Diários)
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
@@ -14,8 +14,7 @@ const gastos = [
 ];
 
 const metas = [
-    { nome: 'Reserva de Emergência', atual: 15000, total: 20000, color: '#00ff88' },
-    { nome: 'Novo MacBook Pro', atual: 4500, total: 18000, color: '#00ddeb' }
+    { nome: 'Reserva de Emergência', atual: 15000, total: 20000, color: '#00ff88' }
 ];
 
 // 2. FUNÇÕES DE RENDERIZAÇÃO
@@ -43,10 +42,6 @@ const renderGoals = () => {
                 <div class="progress-bg">
                     <div class="progress-fill" style="width: ${perc}%; background: ${m.color}"></div>
                 </div>
-                <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#888; margin-top:8px;">
-                    <span>R$ ${m.atual.toLocaleString('pt-BR')}</span>
-                    <span>R$ ${m.total.toLocaleString('pt-BR')}</span>
-                </div>
             </div>
         `;
     }).join('');
@@ -66,7 +61,11 @@ const closeAllModals = () => {
 
 const openEntryModal = (type) => {
     closeAllModals();
-    const modalId = type === 'ganho' ? 'incomeModal' : 'entryModal';
+    let modalId = '';
+    if (type === 'ganho') modalId = 'incomeModal';
+    else if (type === 'adiantamento') modalId = 'advanceModal';
+    else modalId = 'entryModal';
+
     const modal = document.getElementById(modalId);
     const overlay = document.querySelector('.menu-overlay');
     
@@ -122,10 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const openMenu = document.getElementById('openMenu');
     const sideMenu = document.getElementById('sideMenu');
     const linkAddGain = document.getElementById('linkAddGain');
+    const linkAddAdvance = document.getElementById('linkAddAdvance'); // Novo Link
     const linkAddExpense = document.getElementById('linkAddExpense');
+    
     const saveIncome = document.getElementById('saveIncome');
+    const saveAdvance = document.getElementById('saveAdvance'); // Novo Botão
     const saveEntry = document.getElementById('saveEntry');
-    const configLink = document.querySelector('.side-nav a:last-child'); // Configurações
 
     overlay.onclick = closeAllModals;
 
@@ -137,16 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (linkAddGain) linkAddGain.onclick = (e) => { e.preventDefault(); openEntryModal('ganho'); };
+    if (linkAddAdvance) linkAddAdvance.onclick = (e) => { e.preventDefault(); openEntryModal('adiantamento'); };
     if (linkAddExpense) linkAddExpense.onclick = (e) => { e.preventDefault(); openEntryModal('despesa'); };
-
-    if (configLink) {
-        configLink.onclick = (e) => {
-            e.preventDefault();
-            closeAllModals();
-            document.getElementById('configModal').classList.add('active');
-            overlay.classList.add('active');
-        };
-    }
 
     // Salvar Ganho (💰)
     if (saveIncome) {
@@ -157,7 +150,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 atualizarSaldoInterface(valor, 'soma');
                 input.value = '';
                 closeAllModals();
-            } else alert("Valor inválido");
+            }
+        };
+    }
+
+    // Salvar Adiantamento (⚡)
+    if (saveAdvance) {
+        saveAdvance.onclick = () => {
+            const input = document.getElementById('advanceValue');
+            const valor = parseFloat(input.value);
+            if (valor > 0) {
+                atualizarSaldoInterface(valor, 'soma');
+                
+                // Salva o registro de vale para histórico futuro
+                const vales = JSON.parse(localStorage.getItem('finanza_vales') || "[]");
+                vales.push({ data: new Date().toLocaleDateString(), valor: valor });
+                localStorage.setItem('finanza_vales', JSON.stringify(vales));
+
+                input.value = '';
+                closeAllModals();
+                alert("Vale registrado! Dinheiro somado ao saldo atual.");
+            }
         };
     }
 
@@ -170,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 atualizarSaldoInterface(valor, 'subtrai');
                 input.value = '';
                 closeAllModals();
-            } else alert("Valor inválido");
+            }
         };
     }
 
@@ -206,7 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = e.results[0][0].transcript.toLowerCase();
                 voiceBtn.style.background = '#00ff88';
                 voiceBtn.innerHTML = '🎙️';
-                if (text.includes('ganhei') || text.includes('receita')) openEntryModal('ganho');
+                if (text.includes('ganhei')) openEntryModal('ganho');
+                else if (text.includes('adiantamento') || text.includes('vale')) openEntryModal('adiantamento');
                 else openEntryModal('despesa');
             };
             rec.start();
