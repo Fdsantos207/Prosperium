@@ -1,5 +1,5 @@
-/* FINANZA PRIME - ENGINE (V.1.5)
-   Clean Version: No Bottom Tab Bar
+/* FINANZA PRIME - ENGINE (V.1.6)
+   Clean Version: Optimized for Sidebar Navigation
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
@@ -111,7 +111,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const openMenu = document.getElementById('openMenu');
     const closeMenu = document.getElementById('closeMenu');
     const saveEntry = document.getElementById('saveEntry');
-    const configLink = document.querySelector('.side-nav a:last-child');
+    
+    // Links do Menu Lateral
+    const navLinks = document.querySelectorAll('.nav-link');
+    const configLink = navLinks[navLinks.length - 1]; // Último: Configurações
+    const entryLink = navLinks[0]; // Primeiro: Minhas Contas (usaremos como atalho de lançamento)
+
     const configModal = document.getElementById('configModal');
     const saveConfig = document.getElementById('saveConfig');
 
@@ -123,6 +128,15 @@ document.addEventListener('DOMContentLoaded', () => {
             sideMenu.classList.add('active');
             overlay.classList.add('active');
             document.body.classList.add('menu-open');
+        };
+    }
+
+    // Ação do primeiro link (Minhas Contas) abre o Modal de Lançamento
+    if (entryLink) {
+        entryLink.onclick = (e) => {
+            e.preventDefault();
+            closeAllModals();
+            openEntryModal('despesa');
         };
     }
 
@@ -175,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('finanza_saldo', novoSaldoText);
             
             valorInput.value = '';
+            document.getElementById('inputDesc').value = '';
             closeAllModals();
         };
     }

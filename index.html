@@ -9,66 +9,8 @@
     <title>Finanza Prime | Elite PWA</title>
     
     <link rel="stylesheet" href="style.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
-
-<div id="entryModal" class="modal-bottom">
-    <div class="modal-handle"></div>
-    <div class="modal-content">
-        <h2 id="modalTitle">Nova Despesa</h2>
-        
-        <div class="input-group">
-            <label>Valor (R$)</label>
-            <input type="number" id="inputValue" placeholder="0,00" inputmode="decimal">
-        </div>
-
-        <div class="input-group">
-            <label>Descrição</label>
-            <input type="text" id="inputDesc" placeholder="Ex: Almoço, Aluguel...">
-        </div>
-
-        <div class="category-grid">
-            <button class="cat-btn active" onclick="setCategory('Lazer')">🍿 Lazer</button>
-            <button class="cat-btn" onclick="setCategory('Mercado')">🛒 Mercado</button>
-            <button class="cat-btn" onclick="setCategory('Contas')">📄 Contas</button>
-            <button class="cat-btn" onclick="setCategory('Outros')">✨ Outros</button>
-        </div>
-
-        <div class="modal-actions">
-            <button class="btn-cancel" id="closeModal">Cancelar</button>
-            <button class="btn-confirm" id="saveEntry">Confirmar</button>
-        </div>
-    </div>
-</div>
-
-<div id="configModal" class="modal-bottom">
-    <div class="modal-handle"></div>
-    <div class="modal-content">
-        <h2>Ajustes da Conta</h2>
-        
-        <div class="input-group">
-            <label>Seu Nome</label>
-            <input type="text" id="configName" placeholder="Ex: Danilo">
-        </div>
-
-        <div class="input-group">
-            <label>Saldo Inicial Atual (R$)</label>
-            <input type="number" id="configBalance" placeholder="0,00">
-        </div>
-
-        <div class="input-group">
-            <label>Teto de Gastos Mensal (R$)</label>
-            <input type="number" id="configLimit" placeholder="Ex: 3000">
-        </div>
-
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
-            <button class="btn-confirm" id="saveConfig">Salvar Ajustes</button>
-        </div>
-    </div>
-</div>
-
 <body>
 
     <div id="sideMenu" class="sidebar">
@@ -77,6 +19,63 @@
             <div class="user-profile-side">
                 <div class="avatar"></div>
                 <h3>Danilo</h3>
+            </div>
+        </div>
+        <nav class="side-nav">
+            <a href="#" class="nav-link">➕ Novo Lançamento</a>
+            <a href="#" class="nav-link">🎯 Metas de Economia</a>
+            <a href="#" class="nav-link">📊 Relatórios Mensais</a>
+            <a href="#" class="nav-link">⚙️ Configurações</a>
+        </nav>
+    </div>
+
+    <div id="entryModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2 id="modalTitle">Nova Despesa</h2>
+            
+            <div class="input-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="inputValue" placeholder="0,00" inputmode="decimal">
+            </div>
+
+            <div class="input-group">
+                <label>Descrição</label>
+                <input type="text" id="inputDesc" placeholder="Ex: Almoço, Aluguel...">
+            </div>
+
+            <div class="category-grid">
+                <button class="cat-btn active" onclick="setCategory('Lazer')">🍿 Lazer</button>
+                <button class="cat-btn" onclick="setCategory('Mercado')">🛒 Mercado</button>
+                <button class="cat-btn" onclick="setCategory('Contas')">📄 Contas</button>
+                <button class="cat-btn" onclick="setCategory('Outros')">✨ Outros</button>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" id="closeModal">Cancelar</button>
+                <button class="btn-confirm" id="saveEntry">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="configModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2>Ajustes da Conta</h2>
+            
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="configName" placeholder="Ex: Danilo">
+            </div>
+
+            <div class="input-group">
+                <label>Saldo Inicial Atual (R$)</label>
+                <input type="number" id="configBalance" placeholder="0,00">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
+                <button class="btn-confirm" id="saveConfig">Salvar Ajustes</button>
             </div>
         </div>
     </div>
@@ -96,8 +95,8 @@
 
         <div class="balance-card">
             <p class="balance-label">Patrimônio Total</p>
-            <h1 class="balance-value" id="main-balance">R$ 42.180,50</h1>
-            <span class="trend">▲ 8.4% este mês</span>
+            <h1 class="balance-value" id="main-balance">R$ 0,00</h1>
+            <span class="trend">Sincronizado</span>
         </div>
     </header>
 
@@ -108,13 +107,6 @@
     <div class="goals-container" id="goals"></div>
 
     <button class="voice-fab" id="voiceBtn">🎙️</button>
-
-    <nav class="tab-bar">
-        <a href="#" class="tab-item active">●</a>
-        <a href="#" class="tab-item">💳</a>
-        <a href="#" class="tab-item">🎯</a>
-        <a href="#" class="tab-item">⚙️</a>
-    </nav>
 
     <script src="app.js"></script>
 </body>

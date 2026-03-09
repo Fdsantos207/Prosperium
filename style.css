@@ -1,6 +1,6 @@
-/* FINANZA PRIME - CSS PREMIUM (V.1.2)
+/* FINANZA PRIME - CSS PREMIUM (V.1.5)
    Design: Dark Mode / Glassmorphism
-   Dev: Gemini Specialist
+   Dev: Gemini Specialist (Clean Version - No TabBar)
 */
 
 :root {
@@ -27,11 +27,9 @@
 body { 
     background-color: var(--bg-color); 
     color: var(--text-main); 
-    padding-bottom: 30px; /* Diminuímos de 120px para 30px */
+    padding-bottom: 40px; /* Espaço sutil no final da rolagem */
     overflow-x: hidden; 
 }
-
-/* Você também pode apagar as classes .tab-bar e .tab-item para limpar o arquivo */
 
 /* Trava de scroll quando menu aberto */
 body.menu-open {
@@ -240,10 +238,10 @@ body.menu-open {
 }
 .menu-overlay.active { display: block; }
 
-/* --- BOTÕES & NAVEGAÇÃO --- */
+/* --- BOTÕES & VOZ --- */
 .voice-fab {
     position: fixed; 
-    bottom: 100px; 
+    bottom: 40px; /* Ajustado para melhor visual sem TabBar */
     right: 25px; 
     width: 60px; 
     height: 60px;
@@ -257,36 +255,6 @@ body.menu-open {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.tab-bar {
-    position: fixed; 
-    bottom: 0; 
-    width: 100%; 
-    height: 90px; 
-    background: rgba(10, 10, 10, 0.8);
-    backdrop-filter: blur(20px); 
-    -webkit-backdrop-filter: blur(20px);
-    display: flex; 
-    justify-content: space-around; 
-    align-items: center;
-    padding-bottom: 25px; 
-    border-top: 1px solid var(--glass-border);
-    z-index: 95;
-}
-
-.tab-item { 
-    color: var(--text-dim); 
-    font-size: 1.4rem; 
-    text-decoration: none; 
-    transition: 0.3s ease; 
-    opacity: 0.6;
-}
-
-.tab-item.active { 
-    color: var(--accent); 
-    opacity: 1; 
-    transform: translateY(-3px); 
 }
 
 /* MODAL DE BAIXO PARA CIMA */
