@@ -1,5 +1,5 @@
-/* FINANZA PRIME - ENGINE (V.1.4)
-   Core: Charts, Sidebar, Voice AI, Data Entry & Persistent Config
+/* FINANZA PRIME - ENGINE (V.1.5)
+   Clean Version: No Bottom Tab Bar
 */
 
 // 1. ESTADO GLOBAL E DADOS INICIAIS
@@ -115,11 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const configModal = document.getElementById('configModal');
     const saveConfig = document.getElementById('saveConfig');
 
-    // Listeners Globais
     overlay.onclick = closeAllModals;
     if (closeMenu) closeMenu.onclick = closeAllModals;
 
-    // Menu Lateral
     if (openMenu) {
         openMenu.onclick = () => {
             sideMenu.classList.add('active');
@@ -128,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Abrir Configurações
     if (configLink) {
         configLink.onclick = (e) => {
             e.preventDefault();
@@ -138,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Salvar Configurações
     if (saveConfig) {
         saveConfig.onclick = () => {
             const novoNome = document.getElementById('configName').value;
@@ -155,17 +151,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('main-balance').innerText = formatado;
                 localStorage.setItem('finanza_saldo', formatado);
             }
-
             closeAllModals();
         };
     }
 
-    // Lógica de Salvar Transação
     if (saveEntry) {
         saveEntry.onclick = () => {
             const valorInput = document.getElementById('inputValue');
             const valor = parseFloat(valorInput.value);
-
             if (!valor || valor <= 0) return alert("Valor inválido.");
 
             const saldoEl = document.getElementById('main-balance');
@@ -186,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Voz
     const voiceBtn = document.getElementById('voiceBtn');
     if (voiceBtn) {
         voiceBtn.onclick = () => {
