@@ -9,6 +9,7 @@
     <title>Prosperium</title>
     
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -28,85 +29,6 @@
             <a href="#" class="nav-link">🎯 Metas de Economia</a>
             <a href="#" class="nav-link">⚙️ Configurações</a>
         </nav>
-    </div>
-
-    <div id="incomeModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2 style="color: var(--accent)">💰 Registrar Ganho</h2>
-            <div class="input-group">
-                <label>Valor Recebido (R$)</label>
-                <input type="number" id="incomeValue" placeholder="0,00" inputmode="decimal">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
-                <button class="btn-confirm" id="saveIncome" style="background: var(--accent); color: #000;">Somar ao Saldo</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="advanceModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2 style="color: #ffcc00">⚡ Antecipação Diária</h2>
-            <p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 20px;">Pegou um "vale"? Registre aqui.</p>
-            <div class="input-group">
-                <label>Quanto você adiantou? (R$)</label>
-                <input type="number" id="advanceValue" placeholder="0,00" inputmode="decimal" style="border-color: #ffcc00">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
-                <button class="btn-confirm" id="saveAdvance" style="background: #ffcc00; color: #000;">Registrar Vale</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="entryModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2 id="modalTitle">Nova Despesa</h2>
-            
-            <div class="input-group">
-                <label>Valor (R$)</label>
-                <input type="number" id="inputValue" placeholder="0,00" inputmode="decimal">
-            </div>
-
-            <div class="category-grid">
-                <button class="cat-btn active" data-cat="Lazer" onclick="setCategory('Lazer')">🍿 Lazer</button>
-                <button class="cat-btn" data-cat="Mercado" onclick="setCategory('Mercado')">🛒 Mercado</button>
-                <button class="cat-btn" data-cat="Contas" onclick="setCategory('Contas')">📄 Contas</button>
-                <button class="cat-btn" data-cat="Outros" onclick="setCategory('Outros')">✨ Outros</button>
-            </div>
-
-            <div id="noteGroup" class="input-group" style="display: none;">
-                <label>O que foi esse gasto?</label>
-                <input type="text" id="inputNote" placeholder="Ex: Farmácia, Estacionamento...">
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-cancel" id="closeModal">Cancelar</button>
-                <button class="btn-confirm" id="saveEntry">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="configModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2>Ajustes da Conta</h2>
-            <div class="input-group">
-                <label>Seu Nome</label>
-                <input type="text" id="configName" placeholder="Danilo">
-            </div>
-            <div class="input-group">
-                <label>Saldo Inicial (R$)</label>
-                <input type="number" id="configBalance" placeholder="0,00">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
-                <button class="btn-confirm" id="saveConfig">Salvar</button>
-            </div>
-        </div>
     </div>
 
     <header class="premium-header">
@@ -130,6 +52,8 @@
     <h3 class="section-title">Suas Metas</h3>
     <div class="goals-container" id="goals"></div>
 
+    <button id="installBtn" class="install-fab" style="display: none;">📲 Baixar Prosperium</button>
+    
     <button class="voice-fab" id="voiceBtn">🎙️</button>
 
     <script src="app.js"></script>
