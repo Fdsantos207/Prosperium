@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>Finanza Prime | PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <main id="app">
+        <header class="premium-header">
+            <div class="user-profile">
+                <span class="greeting">Olá, Danilo</span>
+                <div class="avatar"></div>
+            </div>
+            <div class="balance-card">
+                <p>Saldo Consolidado</p>
+                <h1 id="balance">R$ 12.450,00</h1>
+                <span class="trend up">+ 12% este mês</span>
+            </div>
+        </header>
+
+        <section class="quick-actions">
+            <button class="action-btn">➕ Receita</button>
+            <button class="action-btn">➖ Despesa</button>
+            <button class="action-btn">📊 Relatórios</button>
+        </section>
+
+        <section class="transactions">
+            <h3>Atividades Recentes</h3>
+            <div class="transaction-item">
+                <div class="icon shop">🛒</div>
+                <div class="details">
+                    <span class="title">Supermercado</span>
+                    <span class="date">Hoje, 14:20</span>
+                </div>
+                <span class="value negative">- R$ 250,00</span>
+            </div>
+        </section>
+
+        <nav class="bottom-nav">
+            <a href="#" class="active">🏠</a>
+            <a href="#">💳</a>
+            <a href="#">🎯</a>
+            <a href="#">⚙️</a>
+        </nav>
+        <section class="analytics-card">
+    <h3>Gastos por Categoria</h3>
+    <div class="chart-container" id="mainChart">
+        </div>
+</section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
