@@ -12,6 +12,36 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
+
+<div id="entryModal" class="modal-bottom">
+    <div class="modal-handle"></div>
+    <div class="modal-content">
+        <h2 id="modalTitle">Nova Despesa</h2>
+        
+        <div class="input-group">
+            <label>Valor (R$)</label>
+            <input type="number" id="inputValue" placeholder="0,00" inputmode="decimal">
+        </div>
+
+        <div class="input-group">
+            <label>Descrição</label>
+            <input type="text" id="inputDesc" placeholder="Ex: Almoço, Aluguel...">
+        </div>
+
+        <div class="category-grid">
+            <button class="cat-btn active" onclick="setCategory('Lazer')">🍿 Lazer</button>
+            <button class="cat-btn" onclick="setCategory('Mercado')">🛒 Mercado</button>
+            <button class="cat-btn" onclick="setCategory('Contas')">📄 Contas</button>
+            <button class="cat-btn" onclick="setCategory('Outros')">✨ Outros</button>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" id="closeModal">Cancelar</button>
+            <button class="btn-confirm" id="saveEntry">Confirmar</button>
+        </div>
+    </div>
+</div>
+
 <body>
 
     <div id="sideMenu" class="sidebar">
