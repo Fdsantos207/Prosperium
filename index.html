@@ -121,10 +121,32 @@
         <div class="modal-handle"></div>
         <div class="modal-content">
             <h2>Configurar Cartão</h2>
-            <div class="input-group"><label>Limite Total</label><input type="number" id="limitInput"></div>
+            <div class="input-group">
+                <label>Limite Total</label>
+                <input type="number" id="limitInput" placeholder="Ex: 5000">
+            </div>
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeAllModals()">Sair</button>
                 <button class="btn-confirm" id="saveCardConfig">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="configModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2>Ajustes de Conta</h2>
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="configName" placeholder="Ex: Danilo">
+            </div>
+            <div class="input-group">
+                <label>Saldo Inicial (Ajuste)</label>
+                <input type="number" id="configBalance" placeholder="Opcional">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeAllModals()">Cancelar</button>
+                <button class="btn-confirm" id="saveConfig">Salvar Alterações</button>
             </div>
         </div>
     </div>
