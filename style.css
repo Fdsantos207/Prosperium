@@ -11,78 +11,108 @@
 
 /* 1. RESET E BASE */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
-.app-container { display: flex; min-height: 100vh; }
+body { 
+    background: var(--bg-dark); 
+    color: var(--text-main); 
+    font-family: 'Inter', sans-serif; 
+    overflow-x: hidden;
+}
+
+/* Ajuste do Container para manter Sidebar e Main alinhados */
+.app-container { 
+    display: flex; 
+    width: 100vw;
+    height: 100vh;
+}
 
 /* 2. SIDEBAR (HÍBRIDA) */
 .sidebar { 
-    width: var(--sidebar-width); height: 100vh; background: var(--card-dark); 
-    position: sticky; top: 0; display: flex; flex-direction: column; 
-    padding: 20px; border-right: 1px solid #30363d; z-index: 9999; transition: 0.3s;
+    width: var(--sidebar-width); 
+    min-width: var(--sidebar-width);
+    height: 100vh; 
+    background: var(--card-dark); 
+    position: sticky; 
+    top: 0; 
+    display: flex; 
+    flex-direction: column; 
+    padding: 20px; 
+    border-right: 1px solid #30363d; 
+    z-index: 1000; 
+    transition: 0.3s;
 }
 
-.sidebar-user { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+.sidebar-user { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; position: relative; }
 .avatar-circle { width: 45px; height: 45px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
 .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; color: var(--text-main); text-decoration: none; border-radius: 8px; margin-bottom: 5px; font-size: 0.9rem; }
+.nav-item:hover { background: #21262d; }
 .nav-item.active { background: #12231c; color: #2ea043; font-weight: 600; }
 
-/* 3. LAYOUT DASHBOARD PRO */
-.main-content { flex: 1; max-width: 100%; }
+.mobile-only-btn { 
+    position: absolute; right: 0; top: 0; background: none; border: none; 
+    color: white; font-size: 1.5rem; display: none; cursor: pointer;
+}
 
-/* Cabeçalho de Navegação de Mês */
+/* 3. LAYOUT DASHBOARD PRO */
+.main-content { 
+    flex: 1; 
+    height: 100vh;
+    overflow-y: auto; 
+    background: var(--bg-dark);
+}
+
 .dashboard-header-pro {
     display: flex; justify-content: center; align-items: center; gap: 40px;
     padding: 20px; border-bottom: 1px solid #30363d; font-weight: 600;
 }
-.nav-month { background: none; border: none; color: #8b949e; font-size: 1.5rem; cursor: pointer; }
 
-/* Grid de 3 Colunas */
-.main-dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 20px;
+/* GRID DE 3 COLUNAS NO DESKTOP */
+@media (min-width: 1025px) {
+    .main-dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+        align-items: start;
+    }
 }
 
 .widget-pro {
     background: var(--card-dark);
     border-radius: 12px;
     border: 1px solid #30363d;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 .widget-pro h4 { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; margin-bottom: 15px; }
 
 /* Estilo Cards Superiores */
 .summary-grid-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-.summary-card-pro { padding: 15px; border-radius: 10px; display: flex; flex-direction: column; }
-.summary-card-pro span { font-size: 0.65rem; font-weight: 600; opacity: 0.9; }
-.summary-card-pro h2 { font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
+.summary-card-pro { padding: 15px; border-radius: 10px; display: flex; flex-direction: column; background: #1c2128; }
+.summary-card-pro.green { background: var(--green); color: white; }
+.summary-card-pro.red { background: var(--red); color: white; }
+.summary-card-pro.blue { background: var(--blue); color: white; }
+.summary-card-pro.white { background: #f0f6fc; color: #0d1117; }
+.summary-card-pro h2 { font-size: 1.2rem; font-weight: 800; margin-top: 5px; }
 
-/* Termômetro em Arco */
+/* Termômetro em Arco Corrigido */
 .gauge-container-pro {
-    position: relative; width: 140px; height: 70px; margin: 10px auto;
+    position: relative; width: 180px; height: 90px; margin: 20px auto;
 }
 .gauge-arc {
-    width: 140px; height: 140px; border: 15px solid #333;
+    width: 180px; height: 180px; border: 18px solid #222;
     border-radius: 50%; border-bottom-color: transparent; border-left-color: transparent;
-    transform: rotate(-45deg); /* Cria o arco superior */
+    transform: rotate(-45deg);
 }
 .pointer-pro {
-    position: absolute; bottom: 0; left: 50%; width: 4px; height: 60px;
-    background: var(--red); transform-origin: bottom center; transition: 0.5s;
+    position: absolute; bottom: 0; left: calc(50% - 2px); width: 4px; height: 80px;
+    background: var(--red); transform-origin: bottom center; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Distribuição de Categorias (Mini Cards) */
+/* Distribuição de Categorias */
 .distribution-row { display: flex; gap: 10px; margin: 15px 0; }
-.dist-item { 
-    flex: 1; background: var(--card-dark); border: 1px solid #30363d;
-    border-radius: 8px; padding: 10px; text-align: center;
-}
-.dist-item span { font-size: 0.6rem; color: #8b949e; display: block; }
-.dist-item strong { font-size: 0.85rem; display: block; margin-top: 4px; }
-.circle { width: 15px; height: 15px; border: 2px solid #30363d; border-radius: 50%; margin: 8px auto 0; }
+.dist-item { flex: 1; background: var(--card-dark); border: 1px solid #30363d; border-radius: 8px; padding: 10px; text-align: center; }
+.circle.gray { width: 12px; height: 12px; border: 2px solid #444; border-radius: 50%; margin: 8px auto 0; }
 
 /* Widget de Cartão */
 .card-item-pro {
@@ -90,94 +120,33 @@ body { background: var(--bg-dark); color: var(--text-main); font-family: 'Inter'
     display: flex; align-items: center; gap: 15px;
 }
 .card-chip-pro { width: 40px; height: 30px; background: #e2a100; border-radius: 5px; }
-.card-limit-line { height: 4px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 8px; overflow: hidden; }
+.card-details-pro { flex: 1; }
+.card-limit-line { height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 8px; overflow: hidden; }
 .cl-red { height: 100%; background: #ff4d4d; }
 
-/* Tabela de Transações (Extrato) */
-.transactions-full-table { padding: 0 20px 40px; }
+/* Tabela de Transações */
+.transactions-full-table { padding: 20px; width: 100%; }
 .table-scroll { 
     background: var(--card-dark); border-radius: 12px; border: 1px solid #30363d;
     overflow-x: auto; 
 }
-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-th { background: #0d1117; padding: 12px 15px; text-align: left; font-size: 0.75rem; color: #8b949e; }
+table { width: 100%; border-collapse: collapse; min-width: 800px; }
+th { background: #0d1117; padding: 15px; text-align: left; font-size: 0.75rem; color: #8b949e; }
 td { padding: 15px; border-bottom: 1px solid #30363d; font-size: 0.85rem; }
+
+/* Metas e Checks */
+.goal-line { display: flex; justify-content: space-between; align-items: center; padding: 12px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+.goal-line:hover { background: rgba(255,255,255,0.05); }
+.check-circle-pro { width: 22px; height: 22px; border: 2px solid #30363d; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.goal-line.completed span { text-decoration: line-through; opacity: 0.5; }
+.goal-line.completed .check-circle-pro { background: var(--green); border-color: var(--green); }
+.goal-line.completed .check-circle-pro::after { content: '✓'; color: white; font-size: 12px; }
 
 /* 4. RESPONSIVIDADE (MOBILE) */
 @media (max-width: 1024px) {
-    .sidebar { position: fixed; transform: translateX(-100%); left: 0; }
+    .sidebar { position: fixed; transform: translateX(-100%); left: 0; z-index: 9999; }
     .sidebar.active { transform: translateX(0); }
     .main-dashboard-grid { grid-template-columns: 1fr; }
-    .mobile-header { display: flex; }
-    .summary-grid-pro { grid-template-columns: 1fr 1fr; }
-}
-
-/* Estilo das Metas */
-.goal-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: 0.2s;
-}
-.goal-line:hover { background: rgba(255,255,255,0.05); }
-
-.check-circle-pro {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #30363d;
-    border-radius: 50%;
-    position: relative;
-    transition: 0.3s;
-}
-
-.goal-line.completed .check-circle-pro {
-    background: var(--green);
-    border-color: var(--green);
-}
-
-.goal-line.completed .check-circle-pro::after {
-    content: '✓';
-    color: white;
-    font-size: 12px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.goal-line.completed span {
-    text-decoration: line-through;
-    color: #8b949e;
-}
-
-/* Estilo Orçamento */
-.budget-content {
-    text-align: center;
-    padding: 20px 0;
-}
-.budget-icon { font-size: 2rem; margin-bottom: 10px; color: var(--green); }
-
-/* Efeito de Meta Concluída */
-.goal-line { transition: 0.3s; cursor: pointer; }
-.goal-line.completed span { 
-    text-decoration: line-through; 
-    color: #8b949e; 
-    opacity: 0.6; 
-}
-.goal-line.completed .check-circle-pro { 
-    background: var(--green) !important; 
-    border-color: var(--green) !important; 
-}
-/* Simula o ícone de check dentro do círculo */
-.goal-line.completed .check-circle-pro::after {
-    content: '✓';
-    color: white;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+    .mobile-header { display: flex; padding: 15px; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
+    .mobile-only-btn { display: block; }
 }
