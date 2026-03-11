@@ -1,5 +1,5 @@
-/* PROSPERIUM PRO - CORE ENGINE (V.3.5)
-   Focus: Hybrid Sidebar Logic & Transaction Sync
+/* PROSPERIUM PRO - CORE ENGINE (V.4.0)
+   Focus: Full Dashboard Sync & Transaction Table
 */
 
 const state = {
@@ -31,26 +31,50 @@ const updateUI = () => {
     const cardAvailable = state.cardConfig.limit - tCard;
     const cardPerc = state.cardConfig.limit > 0 ? (tCard / state.cardConfig.limit) * 100 : 0;
 
-    // Dashboard
+    // 1. Atualização dos Cards Superiores
     document.getElementById('totalIn').innerText = `R$ ${tIn.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('totalOut').innerText = `R$ ${tOut.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('mainBalance').innerText = `R$ ${balance.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     
-    // Cartão
+    // 2. Widget de Cartão Pro
     document.getElementById('cardBill').innerText = `R$ ${tCard.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('cardAvailable').innerText = `R$ ${cardAvailable.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-    document.getElementById('cardProgress').style.width = `${Math.min(cardPerc, 100)}%`;
+    const cardProgress = document.getElementById('cardProgress');
+    if(cardProgress) cardProgress.style.width = `${Math.min(cardPerc, 100)}%`;
     
-    // Termômetro
+    // 3. Termômetro em Arco (Lógica de Graus)
     const ratio = tIn > 0 ? (tOut / tIn) * 100 : 0;
-    const pointer = document.getElementById('gaugePointer');
+    const pointer = document.getElementById('gaugePointerPro'); // ID do novo HTML
     const status = document.getElementById('gaugeStatus');
     
-    pointer.style.width = `${Math.min(ratio, 100)}%`;
+    if (pointer) {
+        // Mapeia 0-100% para -90deg a 90deg
+        const rotation = (Math.min(ratio, 100) * 1.8) - 90;
+        pointer.style.transform = `rotate(${rotation}deg)`;
+    }
     
-    if (ratio > 80) { status.innerText = "Crítico"; status.style.color = "#da3633"; }
-    else if (ratio > 50) { status.innerText = "Alerta"; status.style.color = "#f1c40f"; }
-    else { status.innerText = "Saudável"; status.style.color = "#2ea043"; }
+    if (status) {
+        status.innerText = `${Math.round(ratio)}% - ${ratio > 80 ? "Crítico" : (ratio > 50 ? "Alerta" : "Saudável")}`;
+        status.style.color = ratio > 80 ? "#da3633" : (ratio > 50 ? "#f1c40f" : "#2ea043");
+    }
+
+    // 4. Tabela de Transações Recentes
+    const txBody = document.getElementById('txBody');
+    if (txBody) {
+        txBody.innerHTML = state.transactions.slice(-5).reverse().map(t => `
+            <tr>
+                <td>${t.type === 'in' ? 'Recebimento' : 'Pagamento Compra'}</td>
+                <td>${new Date(t.date).toLocaleDateString('pt-BR')}</td>
+                <td><span class="badge-type">${t.type === 'in' ? 'Renda' : 'Necessidades'}</span></td>
+                <td style="font-weight: 800; color: ${t.type === 'in' ? '#2ea043' : '#fff'}">
+                    R$ ${t.val.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                </td>
+                <td>Outros</td>
+                <td>${t.method === 'credit' ? 'credit' : 'cash'}</td>
+                <td><div class="check-circle" style="background: #2ea043; width: 12px; height: 12px; border-radius: 50%; margin: auto;"></div></td>
+            </tr>
+        `).join('');
+    }
 
     document.getElementById('sideUserName').innerText = `Olá, ${state.userName}!`;
 };
@@ -62,16 +86,13 @@ const openModal = (id) => {
     if (modal && overlay) {
         modal.classList.add('active');
         overlay.classList.add('active');
-        if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
     }
 };
 
 const closeAllModals = () => {
-    // Fecha Modais
     document.querySelectorAll('.modal-bottom').forEach(m => m.classList.remove('active'));
-    // Fecha Sidebar (Mobile)
     document.getElementById('sideMenu').classList.remove('active');
-    // Esconde Overlay
     document.getElementById('overlay').classList.remove('active');
     document.body.style.overflow = 'auto';
 };
@@ -87,7 +108,6 @@ const resetApp = () => {
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
 
-    // Toggle Sidebar (Mobile)
     const openMenuBtn = document.getElementById('openMenu');
     if (openMenuBtn) {
         openMenuBtn.onclick = () => {
@@ -96,11 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Botão de fechar (X) na Sidebar Mobile
     const closeMenuBtn = document.getElementById('closeMenu');
-    if (closeMenuBtn) {
-        closeMenuBtn.onclick = closeAllModals;
-    }
+    if (closeMenuBtn) closeMenuBtn.onclick = closeAllModals;
 
     document.getElementById('overlay').onclick = closeAllModals;
     document.getElementById('fabAdd').onclick = () => openModal('entryModal');
@@ -115,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // Salvar Transação
     document.getElementById('saveEntry').onclick = () => {
         const valInput = document.getElementById('entryValue');
         const val = parseFloat(valInput.value);
@@ -130,14 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Salvar Cartão
     document.getElementById('saveCardConfig').onclick = () => {
         state.cardConfig.limit = parseFloat(document.getElementById('limitInput').value) || 0;
         save();
         closeAllModals();
     };
 
-    // Salvar Configurações
     document.getElementById('saveConfig').onclick = () => {
         const newName = document.getElementById('configName').value;
         if (newName.trim() !== "") {
