@@ -73,6 +73,15 @@
                                 <p>Usado: R$ 343,00 de R$ 350,00</p>
                             </div>
                         </div>
+
+                        <div class="widget-pro budget-widget">
+                            <h4>📉 ORÇAMENTOS</h4>
+                            <div class="budget-status-box">
+                                <div class="budget-icon">💹</div>
+                                <p>Orçamentos em dia!</p>
+                                <small>Nenhuma categoria acima de 80%</small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="dashboard-col">
@@ -116,9 +125,18 @@
 
                         <div class="widget-pro goals-pro">
                             <h4>🏆 METAS MARÇO 🏆</h4>
-                            <div class="goal-line"><span>Poupar 20% do salário</span><div class="check-circle"></div></div>
-                            <div class="goal-line"><span>Não gastar mais que R$500 em lazer</span><div class="check-circle"></div></div>
-                            <div class="goal-line"><span>Pagar todas as contas em dia</span><div class="check-circle"></div></div>
+                            <div class="goal-line" onclick="toggleGoal(this, 0)">
+                                <span>Poupar 20% do salário</span>
+                                <div class="check-circle-pro"></div>
+                            </div>
+                            <div class="goal-line" onclick="toggleGoal(this, 1)">
+                                <span>Não gastar mais que R$500 em lazer</span>
+                                <div class="check-circle-pro"></div>
+                            </div>
+                            <div class="goal-line" onclick="toggleGoal(this, 2)">
+                                <span>Pagar todas as contas em dia</span>
+                                <div class="check-circle-pro"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -138,8 +156,7 @@
                                     <th>Pago</th>
                                 </tr>
                             </thead>
-                            <tbody id="txBody">
-                                </tbody>
+                            <tbody id="txBody"></tbody>
                         </table>
                     </div>
                 </section>

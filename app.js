@@ -1,11 +1,12 @@
-/* PROSPERIUM PRO - CORE ENGINE (V.4.0)
-   Focus: Full Dashboard Sync & Transaction Table
+/* PROSPERIUM PRO - CORE ENGINE (V.4.5)
+   Focus: Interactive Goals, Budget Logic & UI Sync
 */
 
 const state = {
     transactions: JSON.parse(localStorage.getItem('prosper_tx')) || [],
     cardConfig: JSON.parse(localStorage.getItem('prosper_card')) || { limit: 0 },
-    userName: localStorage.getItem('prosper_user') || 'Danilo'
+    userName: localStorage.getItem('prosper_user') || 'Danilo',
+    goals: JSON.parse(localStorage.getItem('prosper_goals')) || [false, false, false]
 };
 
 // --- CORE FUNCTIONS ---
@@ -13,6 +14,7 @@ const save = () => {
     localStorage.setItem('prosper_tx', JSON.stringify(state.transactions));
     localStorage.setItem('prosper_card', JSON.stringify(state.cardConfig));
     localStorage.setItem('prosper_user', state.userName);
+    localStorage.setItem('prosper_goals', JSON.stringify(state.goals));
     updateUI();
 };
 
@@ -31,24 +33,23 @@ const updateUI = () => {
     const cardAvailable = state.cardConfig.limit - tCard;
     const cardPerc = state.cardConfig.limit > 0 ? (tCard / state.cardConfig.limit) * 100 : 0;
 
-    // 1. Atualização dos Cards Superiores
+    // 1. Cards Superiores
     document.getElementById('totalIn').innerText = `R$ ${tIn.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('totalOut').innerText = `R$ ${tOut.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('mainBalance').innerText = `R$ ${balance.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     
-    // 2. Widget de Cartão Pro
+    // 2. Cartão de Crédito
     document.getElementById('cardBill').innerText = `R$ ${tCard.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('cardAvailable').innerText = `R$ ${cardAvailable.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     const cardProgress = document.getElementById('cardProgress');
     if(cardProgress) cardProgress.style.width = `${Math.min(cardPerc, 100)}%`;
     
-    // 3. Termômetro em Arco (Lógica de Graus)
+    // 3. Termômetro em Arco
     const ratio = tIn > 0 ? (tOut / tIn) * 100 : 0;
-    const pointer = document.getElementById('gaugePointerPro'); // ID do novo HTML
+    const pointer = document.getElementById('gaugePointerPro');
     const status = document.getElementById('gaugeStatus');
     
     if (pointer) {
-        // Mapeia 0-100% para -90deg a 90deg
         const rotation = (Math.min(ratio, 100) * 1.8) - 90;
         pointer.style.transform = `rotate(${rotation}deg)`;
     }
@@ -58,7 +59,29 @@ const updateUI = () => {
         status.style.color = ratio > 80 ? "#da3633" : (ratio > 50 ? "#f1c40f" : "#2ea043");
     }
 
-    // 4. Tabela de Transações Recentes
+    // 4. Renderizar Metas e Tabela
+    renderGoals();
+    renderTransactions();
+
+    document.getElementById('sideUserName').innerText = `Olá, ${state.userName}!`;
+};
+
+// --- LOGICA DE METAS ---
+window.toggleGoal = (element, index) => {
+    state.goals[index] = !state.goals[index];
+    save(); // Salva e atualiza o visual
+};
+
+const renderGoals = () => {
+    const goalLines = document.querySelectorAll('.goal-line');
+    goalLines.forEach((line, index) => {
+        if (state.goals[index]) line.classList.add('completed');
+        else line.classList.remove('completed');
+    });
+};
+
+// --- RENDERIZAR TABELA ---
+const renderTransactions = () => {
     const txBody = document.getElementById('txBody');
     if (txBody) {
         txBody.innerHTML = state.transactions.slice(-5).reverse().map(t => `
@@ -75,11 +98,9 @@ const updateUI = () => {
             </tr>
         `).join('');
     }
-
-    document.getElementById('sideUserName').innerText = `Olá, ${state.userName}!`;
 };
 
-// --- MODAL & SIDEBAR LOGIC ---
+// --- MODAL & SIDEBAR ---
 const openModal = (id) => {
     const modal = document.getElementById(id);
     const overlay = document.getElementById('overlay');
@@ -98,7 +119,7 @@ const closeAllModals = () => {
 };
 
 const resetApp = () => {
-    if(confirm("Deseja zerar todos os dados do Prosperium Pro?")) {
+    if(confirm("Zerar todos os dados do Prosperium Pro?")) {
         localStorage.clear();
         location.reload();
     }
@@ -108,13 +129,10 @@ const resetApp = () => {
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
 
-    const openMenuBtn = document.getElementById('openMenu');
-    if (openMenuBtn) {
-        openMenuBtn.onclick = () => {
-            document.getElementById('sideMenu').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        };
-    }
+    document.getElementById('openMenu').onclick = () => {
+        document.getElementById('sideMenu').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
+    };
 
     const closeMenuBtn = document.getElementById('closeMenu');
     if (closeMenuBtn) closeMenuBtn.onclick = closeAllModals;
@@ -123,15 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fabAdd').onclick = () => openModal('entryModal');
     document.getElementById('linkCardSetup').onclick = (e) => { e.preventDefault(); openModal('cardModal'); };
     
-    const linkConfig = document.getElementById('linkConfig');
-    if (linkConfig) {
-        linkConfig.onclick = (e) => {
-            e.preventDefault();
-            document.getElementById('configName').value = state.userName;
-            openModal('configModal');
-        };
-    }
-
     document.getElementById('saveEntry').onclick = () => {
         const valInput = document.getElementById('entryValue');
         const val = parseFloat(valInput.value);
@@ -149,15 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saveCardConfig').onclick = () => {
         state.cardConfig.limit = parseFloat(document.getElementById('limitInput').value) || 0;
         save();
-        closeAllModals();
-    };
-
-    document.getElementById('saveConfig').onclick = () => {
-        const newName = document.getElementById('configName').value;
-        if (newName.trim() !== "") {
-            state.userName = newName;
-            save();
-        }
         closeAllModals();
     };
 });

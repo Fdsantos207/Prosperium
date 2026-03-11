@@ -111,3 +111,73 @@ td { padding: 15px; border-bottom: 1px solid #30363d; font-size: 0.85rem; }
     .mobile-header { display: flex; }
     .summary-grid-pro { grid-template-columns: 1fr 1fr; }
 }
+
+/* Estilo das Metas */
+.goal-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+.goal-line:hover { background: rgba(255,255,255,0.05); }
+
+.check-circle-pro {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #30363d;
+    border-radius: 50%;
+    position: relative;
+    transition: 0.3s;
+}
+
+.goal-line.completed .check-circle-pro {
+    background: var(--green);
+    border-color: var(--green);
+}
+
+.goal-line.completed .check-circle-pro::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.goal-line.completed span {
+    text-decoration: line-through;
+    color: #8b949e;
+}
+
+/* Estilo Orçamento */
+.budget-content {
+    text-align: center;
+    padding: 20px 0;
+}
+.budget-icon { font-size: 2rem; margin-bottom: 10px; color: var(--green); }
+
+/* Efeito de Meta Concluída */
+.goal-line { transition: 0.3s; cursor: pointer; }
+.goal-line.completed span { 
+    text-decoration: line-through; 
+    color: #8b949e; 
+    opacity: 0.6; 
+}
+.goal-line.completed .check-circle-pro { 
+    background: var(--green) !important; 
+    border-color: var(--green) !important; 
+}
+/* Simula o ícone de check dentro do círculo */
+.goal-line.completed .check-circle-pro::after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
