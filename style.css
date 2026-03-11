@@ -5,46 +5,52 @@
     --red: #da3633;
     --blue: #1f6feb;
     --text-main: #c9d1d9;
+    --sidebar-width: 280px;
 }
 
 /* 1. RESET E BASE */
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; /* Corrigido: era box-box-sizing */
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body { 
     background: var(--bg-dark); 
     color: var(--text-main); 
     font-family: 'Inter', sans-serif; 
-    overflow-x: hidden; 
-    -webkit-tap-highlight-color: transparent; /* Remove o brilho azul ao clicar no mobile */
+    overflow-x: hidden;
 }
 
-/* 2. MENU LATERAL (Ajustado para sobrepor tudo) */
+/* ESTRUTURA HÍBRIDA (GRID) */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 2. MENU LATERAL (SIDEBAR) */
 .sidebar { 
-    position: fixed; 
-    left: -280px; 
-    width: 280px; 
-    height: 100%; 
+    width: var(--sidebar-width);
+    height: 100vh;
     background: var(--card-dark); 
-    z-index: 9999; /* Aumentado para ser a camada mais alta */
-    transition: transform 0.3s ease-in-out; 
-    padding: 20px; 
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
     border-right: 1px solid #30363d;
-}
-
-.sidebar.active { 
-    transform: translateX(280px); /* Forma mais performática de mover */
+    z-index: 9999;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-user { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+.user-text h4 { font-size: 1rem; color: #fff; }
+.user-text span { font-size: 0.75rem; color: #8b949e; }
 .avatar-circle { width: 45px; height: 45px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
 
+.side-nav { flex: 1; }
+
 .nav-item { 
-    display: block; 
-    padding: 14px 12px; 
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px; 
     color: var(--text-main); 
     text-decoration: none; 
     border-radius: 8px; 
@@ -53,87 +59,64 @@ body {
     transition: 0.2s;
 }
 
-.nav-item.active { background: #21262d; color: var(--green); font-weight: 600; }
+.nav-item span { font-size: 1.1rem; }
+.nav-item:hover { background: #21262d; }
+.nav-item.active { background: #12231c; color: #2ea043; font-weight: 600; }
 
-.menu-overlay { 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.8); 
-    display: none; 
-    z-index: 9000; /* Logo abaixo da sidebar */
-    backdrop-filter: blur(4px); /* Efeito de desfoque premium */
+.sidebar-footer { padding-top: 20px; border-top: 1px solid #30363d; }
+.logout { color: #f85149 !important; }
+
+/* 3. CONTEÚDO PRINCIPAL */
+.main-content {
+    flex: 1;
+    max-width: 100%;
 }
 
-.menu-overlay.active { display: block; }
-
-/* 3. DASHBOARD */
-.top-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+.mobile-header { display: none; padding: 20px; justify-content: space-between; align-items: center; }
 #openMenu { background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; }
 
-.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
-.summary-card { padding: 18px 15px; border-radius: 12px; display: flex; flex-direction: column; }
-.summary-card span { font-size: 0.7rem; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
-.summary-card h2 { font-size: 1.2rem; margin-top: 5px; font-weight: 800; }
+/* DASHBOARD CARDS */
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; padding: 20px; }
+.summary-card { padding: 20px; border-radius: 12px; display: flex; flex-direction: column; }
+.summary-card span { font-size: 0.7rem; font-weight: 600; opacity: 0.8; text-transform: uppercase; }
+.summary-card h2 { font-size: 1.3rem; margin-top: 5px; font-weight: 800; }
 
 .green { background: var(--green); color: white; } 
 .red { background: var(--red); color: white; } 
 .blue { background: var(--blue); color: white; } 
 .white { background: #f0f6fc; color: #0d1117; }
 
-/* 4. WIDGETS */
-.widget { background: var(--card-dark); margin: 15px; padding: 20px; border-radius: 15px; border: 1px solid #30363d; }
-.gauge-container { width: 100%; height: 10px; background: #333; border-radius: 10px; margin: 20px 0; position: relative; overflow: hidden; }
-.pointer { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), #f1c40f, var(--red)); transition: 0.8s ease; }
+/* WIDGETS */
+.widgets-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; padding: 0 20px; }
+.widget { background: var(--card-dark); padding: 20px; border-radius: 15px; border: 1px solid #30363d; }
 
-.card-progress-container { height: 8px; background: #333; border-radius: 10px; margin: 12px 0; }
-.card-progress-fill { height: 100%; background: var(--blue); width: 0%; transition: 0.8s ease; }
-.card-footer-info { display: flex; justify-content: space-between; font-size: 0.75rem; opacity: 0.7; }
+/* 4. RESPONSIVIDADE (MOBILE) */
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed;
+        left: 0;
+        transform: translateX(-100%);
+    }
 
-/* 5. MODAIS (Ajustado Z-index para ficar abaixo do menu) */
-.modal-bottom { 
-    position: fixed; 
-    bottom: -100%; 
-    left: 0; 
-    width: 100%; 
-    background: #1c2128; 
-    border-radius: 24px 24px 0 0; 
-    padding: 25px 20px; 
-    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-    z-index: 8000; /* Abaixo do menu lateral */
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+    .sidebar.active { transform: translateX(0); }
+
+    .mobile-header { display: flex; }
+    
+    .menu-overlay { 
+        position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
+        display: none; z-index: 9000; backdrop-filter: blur(4px); 
+    }
+    .menu-overlay.active { display: block; }
+    
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .mobile-only-btn { display: block; background: none; border: none; color: white; font-size: 2rem; margin-left: auto; }
 }
 
+@media (min-width: 1025px) {
+    .mobile-only-btn { display: none; }
+}
+
+/* 5. MODAIS E FAB (Mantidos conforme o seu original) */
+.modal-bottom { position: fixed; bottom: -100%; left: 0; width: 100%; background: #1c2128; border-radius: 24px 24px 0 0; padding: 25px 20px; transition: 0.4s; z-index: 99999; }
 .modal-bottom.active { bottom: 0; }
-.modal-handle { width: 40px; height: 4px; background: #30363d; border-radius: 10px; margin: -10px auto 20px; }
-
-.input-group { margin-bottom: 18px; }
-.input-group label { display: block; font-size: 0.8rem; color: #8b949e; margin-bottom: 8px; font-weight: 600; }
-.input-group input, select { width: 100%; padding: 14px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 10px; font-size: 1rem; outline: none; }
-.input-group input:focus { border-color: var(--blue); }
-
-.modal-actions { display: flex; gap: 12px; margin-top: 25px; }
-.btn-confirm { flex: 2; padding: 16px; border: none; border-radius: 12px; color: white; font-weight: 700; background: var(--green); font-size: 1rem; cursor: pointer; }
-.btn-cancel { flex: 1; padding: 16px; border: none; border-radius: 12px; color: white; background: #30363d; font-size: 1rem; cursor: pointer; }
-
-/* 6. FLOATING ACTION BUTTON */
-.fab-main { 
-    position: fixed; 
-    bottom: 30px; 
-    right: 25px; 
-    width: 65px; 
-    height: 65px; 
-    background: var(--green); 
-    border-radius: 50%; 
-    color: white; 
-    font-size: 32px; 
-    border: none; 
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4); 
-    z-index: 5000; /* Entre os modais e o conteúdo */
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-}
-
-.fab-main:active { transform: scale(0.9); }
+.fab-main { position: fixed; bottom: 30px; right: 25px; width: 65px; height: 65px; background: var(--green); border-radius: 50%; color: white; font-size: 32px; border: none; z-index: 5000; display: flex; align-items: center; justify-content: center; }

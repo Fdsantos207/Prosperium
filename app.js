@@ -1,5 +1,5 @@
-/* PROSPERIUM PRO - CORE ENGINE (V.3.1)
-   Focus: Sidebar UI Fix, UI Sync & Data Persistence
+/* PROSPERIUM PRO - CORE ENGINE (V.3.5)
+   Focus: Hybrid Sidebar Logic & Transaction Sync
 */
 
 const state = {
@@ -31,17 +31,17 @@ const updateUI = () => {
     const cardAvailable = state.cardConfig.limit - tCard;
     const cardPerc = state.cardConfig.limit > 0 ? (tCard / state.cardConfig.limit) * 100 : 0;
 
-    // Atualização de Saldo e Dashboard
+    // Dashboard
     document.getElementById('totalIn').innerText = `R$ ${tIn.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('totalOut').innerText = `R$ ${tOut.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('mainBalance').innerText = `R$ ${balance.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     
-    // Widgets de Cartão
+    // Cartão
     document.getElementById('cardBill').innerText = `R$ ${tCard.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('cardAvailable').innerText = `R$ ${cardAvailable.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
     document.getElementById('cardProgress').style.width = `${Math.min(cardPerc, 100)}%`;
     
-    // Termômetro Financeiro
+    // Termômetro
     const ratio = tIn > 0 ? (tOut / tIn) * 100 : 0;
     const pointer = document.getElementById('gaugePointer');
     const status = document.getElementById('gaugeStatus');
@@ -52,26 +52,28 @@ const updateUI = () => {
     else if (ratio > 50) { status.innerText = "Alerta"; status.style.color = "#f1c40f"; }
     else { status.innerText = "Saudável"; status.style.color = "#2ea043"; }
 
-    // Sincronizar Nome do Usuário
-    document.getElementById('sideUserName').innerText = state.userName;
+    document.getElementById('sideUserName').innerText = `Olá, ${state.userName}!`;
 };
 
-// --- MODAL LOGIC ---
+// --- MODAL & SIDEBAR LOGIC ---
 const openModal = (id) => {
     const modal = document.getElementById(id);
     const overlay = document.getElementById('overlay');
     if (modal && overlay) {
         modal.classList.add('active');
         overlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Trava o scroll do fundo
+        if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
     }
 };
 
 const closeAllModals = () => {
+    // Fecha Modais
     document.querySelectorAll('.modal-bottom').forEach(m => m.classList.remove('active'));
+    // Fecha Sidebar (Mobile)
     document.getElementById('sideMenu').classList.remove('active');
+    // Esconde Overlay
     document.getElementById('overlay').classList.remove('active');
-    document.body.style.overflow = 'auto'; // Libera o scroll
+    document.body.style.overflow = 'auto';
 };
 
 const resetApp = () => {
@@ -85,7 +87,7 @@ const resetApp = () => {
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
 
-    // Menu Lateral
+    // Toggle Sidebar (Mobile)
     const openMenuBtn = document.getElementById('openMenu');
     if (openMenuBtn) {
         openMenuBtn.onclick = () => {
@@ -94,23 +96,26 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // Botão de fechar (X) na Sidebar Mobile
+    const closeMenuBtn = document.getElementById('closeMenu');
+    if (closeMenuBtn) {
+        closeMenuBtn.onclick = closeAllModals;
+    }
+
     document.getElementById('overlay').onclick = closeAllModals;
     document.getElementById('fabAdd').onclick = () => openModal('entryModal');
     document.getElementById('linkCardSetup').onclick = (e) => { e.preventDefault(); openModal('cardModal'); };
     
-    // Seletor de Ajustes (Configurações)
     const linkConfig = document.getElementById('linkConfig');
     if (linkConfig) {
         linkConfig.onclick = (e) => {
             e.preventDefault();
-            // Preenche os campos com os dados atuais antes de abrir
             document.getElementById('configName').value = state.userName;
-            document.getElementById('configBalance').value = ""; // Saldo inicial opcional
             openModal('configModal');
         };
     }
 
-    // Salvar Lançamento (Entrada/Saída/Cartão)
+    // Salvar Transação
     document.getElementById('saveEntry').onclick = () => {
         const valInput = document.getElementById('entryValue');
         const val = parseFloat(valInput.value);
@@ -118,38 +123,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const method = document.getElementById('entryMethod').value;
 
         if (val > 0) {
-            state.transactions.push({ 
-                val, 
-                type, 
-                method, 
-                date: new Date().toISOString() 
-            });
+            state.transactions.push({ val, type, method, date: new Date().toISOString() });
             save();
             valInput.value = '';
             closeAllModals();
-        } else {
-            alert("Por favor, insira um valor válido.");
         }
     };
 
-    // Salvar Configuração do Cartão
+    // Salvar Cartão
     document.getElementById('saveCardConfig').onclick = () => {
-        const limitInput = document.getElementById('limitInput');
-        state.cardConfig.limit = parseFloat(limitInput.value) || 0;
+        state.cardConfig.limit = parseFloat(document.getElementById('limitInput').value) || 0;
         save();
         closeAllModals();
     };
 
-    // Salvar Configurações Gerais
-    const saveConfigBtn = document.getElementById('saveConfig');
-    if (saveConfigBtn) {
-        saveConfigBtn.onclick = () => {
-            const newName = document.getElementById('configName').value;
-            if (newName.trim() !== "") {
-                state.userName = newName;
-                save();
-            }
-            closeAllModals();
-        };
-    }
+    // Salvar Configurações
+    document.getElementById('saveConfig').onclick = () => {
+        const newName = document.getElementById('configName').value;
+        if (newName.trim() !== "") {
+            state.userName = newName;
+            save();
+        }
+        closeAllModals();
+    };
 });
