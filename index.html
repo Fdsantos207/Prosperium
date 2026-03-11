@@ -3,131 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a0a0a">
-    <title>Prosperium</title>
-    
+    <title>Prosperium Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="dark-mode">
 
     <div id="sideMenu" class="sidebar">
-        <div class="sidebar-header">
-            <button id="closeMenu" class="close-btn">&times;</button>
-            <div class="user-profile-side">
-                <div class="avatar"></div>
-                <h3>Danilo</h3>
+        <div class="sidebar-user">
+            <div class="avatar-circle">F</div>
+            <div>
+                <h4 id="userNameDisplay">Olá, Danilo!</h4>
+                <span>Bem-vindo de volta</span>
             </div>
         </div>
         <nav class="side-nav">
-            <a href="#" class="nav-link" id="linkAddGain" style="color: var(--accent); font-weight: 800;">💰 Lançar Ganho Semanal</a>
-            <a href="#" class="nav-link" id="linkAddAdvance" style="color: #ffcc00; font-weight: 800;">⚡ Registrar Adiantamento</a>
-            <a href="#" class="nav-link" id="linkAddExpense">💸 Lançar Despesa</a>
-            <a href="#" class="nav-link" id="linkGoals">🎯 Metas de Economia</a>
-            <a href="#" class="nav-link" id="linkConfig">⚙️ Configurações</a>
+            <a href="#" class="nav-item active">📊 Dashboard</a>
+            <a href="#" class="nav-item">💸 Transações</a>
+            <a href="#" class="nav-item">💳 Cartões</a>
+            <a href="#" class="nav-item">🎯 Metas</a>
+            <a href="#" class="nav-item">📈 Relatórios</a>
+            <a href="#" class="nav-item" id="linkConfig">⚙️ Configurações</a>
         </nav>
     </div>
 
-    <div id="incomeModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2 style="color: var(--accent)">💰 Registrar Ganho</h2>
-            <div class="input-group">
-                <label>Valor Recebido (R$)</label>
-                <input type="number" id="incomeValue" placeholder="0,00" inputmode="decimal">
+    <main class="main-content">
+        <header class="top-bar">
+            <button id="openMenu">☰</button>
+            <div class="date-display">
+                <span id="currentMonth">Março 2026</span>
             </div>
-            <div class="modal-actions">
-                <button class="btn-cancel">Voltar</button>
-                <button class="btn-confirm" id="saveIncome" style="background: var(--accent); color: #000;">Somar ao Saldo</button>
-            </div>
-        </div>
-    </div>
+        </header>
 
-    <div id="advanceModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2 style="color: #ffcc00">⚡ Antecipação Diária</h2>
-            <div class="input-group">
-                <label>Quanto você adiantou? (R$)</label>
-                <input type="number" id="advanceValue" placeholder="0,00" inputmode="decimal" style="border-color: #ffcc00">
+        <section class="summary-grid">
+            <div class="summary-card green">
+                <span>Entradas do Mês</span>
+                <h2 id="totalIn">R$ 0,00</h2>
             </div>
-            <div class="modal-actions">
-                <button class="btn-cancel">Voltar</button>
-                <button class="btn-confirm" id="saveAdvance" style="background: #ffcc00; color: #000;">Registrar Vale</button>
+            <div class="summary-card red">
+                <span>Saídas à Vista</span>
+                <h2 id="totalOut">R$ 0,00</h2>
             </div>
-        </div>
-    </div>
+            <div class="summary-card blue">
+                <span>Total Investido</span>
+                <h2 id="totalInv">R$ 0,00</h2>
+            </div>
+            <div class="summary-card white">
+                <span>Saldo Disponível</span>
+                <h2 id="mainBalance">R$ 0,00</h2>
+            </div>
+        </section>
 
-    <div id="entryModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2 id="modalTitle">Nova Despesa</h2>
-            <div class="input-group">
-                <label>Valor (R$)</label>
-                <input type="number" id="inputValue" placeholder="0,00" inputmode="decimal">
+        <section class="widgets-row">
+            <div class="widget thermometer-widget">
+                <h4>TERMÔMETRO FINANCEIRO</h4>
+                <div class="gauge-container">
+                    <div id="gaugePointer" class="pointer"></div>
+                </div>
+                <p id="gaugeStatus">Crítico</p>
             </div>
-            <div class="category-grid">
-                <button class="cat-btn active" data-cat="Lazer" onclick="setCategory('Lazer')">🍿 Lazer</button>
-                <button class="cat-btn" data-cat="Mercado" onclick="setCategory('Mercado')">🛒 Mercado</button>
-                <button class="cat-btn" data-cat="Contas" onclick="setCategory('Contas')">📄 Contas</button>
-                <button class="cat-btn" data-cat="Outros" onclick="setCategory('Outros')">✨ Outros</button>
-            </div>
-            <div id="noteGroup" class="input-group" style="display: none;">
-                <label>O que foi esse gasto?</label>
-                <input type="text" id="inputNote" placeholder="Ex: Farmácia, Estacionamento...">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel">Cancelar</button>
-                <button class="btn-confirm" id="saveEntry">Confirmar</button>
-            </div>
-        </div>
-    </div>
 
-    <div id="configModal" class="modal-bottom">
-        <div class="modal-handle"></div>
-        <div class="modal-content">
-            <h2>Ajustes da Conta</h2>
-            <div class="input-group">
-                <label>Seu Nome</label>
-                <input type="text" id="configName" placeholder="Danilo">
+            <div class="widget cards-widget">
+                <h4>Cartões de Crédito</h4>
+                <div class="card-item">
+                    <div class="card-brand">Mastercard</div>
+                    <div class="card-val">
+                        <span>Fatura atual</span>
+                        <strong id="cardBill">R$ 0,00</strong>
+                    </div>
+                </div>
+                <div class="card-alert">Próximo do limite</div>
             </div>
-            <div class="input-group">
-                <label>Saldo Inicial (R$)</label>
-                <input type="number" id="configBalance" placeholder="0,00">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel">Voltar</button>
-                <button class="btn-confirm" id="saveConfig">Salvar</button>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <header class="premium-header">
-        <div class="user-info">
-            <div class="greeting">
-                <button id="openMenu" class="hamburger"><span></span><span></span><span></span></button>
-                <h2 class="user-name">Prosperium</h2>
-            </div>
-            <div class="avatar"></div>
-        </div>
-        <div class="balance-card">
-            <p class="balance-label">Patrimônio Total</p>
-            <h1 class="balance-value" id="main-balance">R$ 0,00</h1>
-            <span class="trend">Sincronizado</span>
-        </div>
-    </header>
-
-    <h3 class="section-title">Análise de Gastos</h3>
-    <div class="chart-container" id="chart"></div>
-
-    <h3 class="section-title">Suas Metas</h3>
-    <div class="goals-container" id="goals"></div>
-
-    <button id="installBtn" class="install-fab" style="display: none;">📲 Baixar Prosperium</button>
-    <button class="voice-fab" id="voiceBtn">🎙️</button>
+        <button class="fab-main" id="fabAdd">+</button>
+    </main>
 
     <script src="app.js"></script>
 </body>
