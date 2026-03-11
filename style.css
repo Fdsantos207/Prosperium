@@ -10,94 +10,104 @@
 }
 
 /* 1. RESET E BASE */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    -webkit-font-smoothing: antialiased;
+}
 
 body { 
     background: var(--bg-dark); 
     color: var(--text-main); 
     font-family: 'Inter', sans-serif; 
-    overflow-x: hidden;
+    overflow: hidden; /* Evita scroll duplo com o main */
 }
 
-/* Ajuste do Container para manter Sidebar e Main alinhados */
+/* 2. ESTRUTURA PRINCIPAL */
 .app-container { 
     display: flex; 
     width: 100vw;
     height: 100vh;
 }
 
-/* 2. SIDEBAR (HÍBRIDA) */
+/* SIDEBAR FIXA NO DESKTOP */
 .sidebar { 
     width: var(--sidebar-width); 
     min-width: var(--sidebar-width);
     height: 100vh; 
     background: var(--card-dark); 
-    position: sticky; 
-    top: 0; 
     display: flex; 
     flex-direction: column; 
     padding: 20px; 
     border-right: 1px solid #30363d; 
-    z-index: 1000; 
-    transition: 0.3s;
+    z-index: 1000;
 }
 
-.sidebar-user { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; position: relative; }
-.avatar-circle { width: 45px; height: 45px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px; color: var(--text-main); text-decoration: none; border-radius: 8px; margin-bottom: 5px; font-size: 0.9rem; }
-.nav-item:hover { background: #21262d; }
-.nav-item.active { background: #12231c; color: #2ea043; font-weight: 600; }
-
-.mobile-only-btn { 
-    position: absolute; right: 0; top: 0; background: none; border: none; 
-    color: white; font-size: 1.5rem; display: none; cursor: pointer;
-}
-
-/* 3. LAYOUT DASHBOARD PRO */
 .main-content { 
     flex: 1; 
     height: 100vh;
-    overflow-y: auto; 
+    overflow-y: auto; /* Scroll apenas aqui */
     background: var(--bg-dark);
 }
 
+/* 3. COMPONENTES DE NAVEGAÇÃO */
+.sidebar-user { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+.avatar-circle { width: 45px; height: 45px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
+
+.nav-item { 
+    display: flex; align-items: center; gap: 12px; padding: 12px; 
+    color: var(--text-main); text-decoration: none; border-radius: 8px; 
+    margin-bottom: 5px; font-size: 0.9rem; transition: 0.2s;
+}
+.nav-item:hover { background: #21262d; }
+.nav-item.active { background: #12231c; color: #2ea043; font-weight: 600; }
+
 .dashboard-header-pro {
     display: flex; justify-content: center; align-items: center; gap: 40px;
-    padding: 20px; border-bottom: 1px solid #30363d; font-weight: 600;
+    padding: 20px; border-bottom: 1px solid #30363d;
 }
 
-/* GRID DE 3 COLUNAS NO DESKTOP */
+/* 4. DASHBOARD GRID (O CORAÇÃO DO LAYOUT) */
+.main-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Padrão Mobile */
+    gap: 20px;
+    padding: 20px;
+}
+
 @media (min-width: 1025px) {
     .main-dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-        padding: 20px;
+        grid-template-columns: repeat(3, 1fr); /* 3 Colunas Perfeitas no PC */
         align-items: start;
     }
 }
 
+/* WIDGETS */
 .widget-pro {
     background: var(--card-dark);
     border-radius: 12px;
     border: 1px solid #30363d;
     padding: 20px;
-    margin-bottom: 20px;
 }
 .widget-pro h4 { font-size: 0.75rem; color: #8b949e; text-transform: uppercase; margin-bottom: 15px; }
 
-/* Estilo Cards Superiores */
-.summary-grid-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-.summary-card-pro { padding: 15px; border-radius: 10px; display: flex; flex-direction: column; background: #1c2128; }
-.summary-card-pro.green { background: var(--green); color: white; }
-.summary-card-pro.red { background: var(--red); color: white; }
-.summary-card-pro.blue { background: var(--blue); color: white; }
-.summary-card-pro.white { background: #f0f6fc; color: #0d1117; }
-.summary-card-pro h2 { font-size: 1.2rem; font-weight: 800; margin-top: 5px; }
+/* CARDS DE RESUMO */
+.summary-grid-pro { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.summary-card-pro { 
+    padding: 15px; border-radius: 10px; display: flex; flex-direction: column;
+}
+.summary-card-pro span { font-size: 0.65rem; font-weight: 600; opacity: 0.8; }
+.summary-card-pro h2 { font-size: 1.1rem; margin-top: 5px; }
 
-/* Termômetro em Arco Corrigido */
+.green { background: var(--green); color: white; }
+.red { background: var(--red); color: white; }
+.blue { background: var(--blue); color: white; }
+.white { background: #f0f6fc; color: #0d1117; }
+
+/* 5. GRÁFICOS E INDICADORES */
 .gauge-container-pro {
-    position: relative; width: 180px; height: 90px; margin: 20px auto;
+    position: relative; width: 180px; height: 90px; margin: 20px auto; overflow: hidden;
 }
 .gauge-arc {
     width: 180px; height: 180px; border: 18px solid #222;
@@ -106,154 +116,52 @@ body {
 }
 .pointer-pro {
     position: absolute; bottom: 0; left: calc(50% - 2px); width: 4px; height: 80px;
-    background: var(--red); transform-origin: bottom center; transition: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--red); transform-origin: bottom center; 
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Distribuição de Categorias */
 .distribution-row { display: flex; gap: 10px; margin: 15px 0; }
-.dist-item { flex: 1; background: var(--card-dark); border: 1px solid #30363d; border-radius: 8px; padding: 10px; text-align: center; }
-.circle.gray { width: 12px; height: 12px; border: 2px solid #444; border-radius: 50%; margin: 8px auto 0; }
+.dist-item { flex: 1; background: #1c2128; border-radius: 8px; padding: 10px; text-align: center; border: 1px solid #30363d; }
+.circle.gray { width: 10px; height: 10px; border: 2px solid #444; border-radius: 50%; margin: 8px auto 0; }
 
-/* Widget de Cartão */
-.card-item-pro {
-    background: var(--purple); color: white; padding: 15px; border-radius: 10px;
-    display: flex; align-items: center; gap: 15px;
-}
-.card-chip-pro { width: 40px; height: 30px; background: #e2a100; border-radius: 5px; }
-.card-details-pro { flex: 1; }
-.card-limit-line { height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; margin-top: 8px; overflow: hidden; }
-.cl-red { height: 100%; background: #ff4d4d; }
-
-/* Tabela de Transações */
-.transactions-full-table { padding: 20px; width: 100%; }
+/* 6. TABELA (LARGURA TOTAL) */
+.transactions-full-table { padding: 0 20px 40px; }
 .table-scroll { 
     background: var(--card-dark); border-radius: 12px; border: 1px solid #30363d;
     overflow-x: auto; 
 }
 table { width: 100%; border-collapse: collapse; min-width: 800px; }
-th { background: #0d1117; padding: 15px; text-align: left; font-size: 0.75rem; color: #8b949e; }
+th { background: #0d1117; padding: 15px; text-align: left; font-size: 0.7rem; color: #8b949e; }
 td { padding: 15px; border-bottom: 1px solid #30363d; font-size: 0.85rem; }
 
-/* Metas e Checks */
-.goal-line { display: flex; justify-content: space-between; align-items: center; padding: 12px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
-.goal-line:hover { background: rgba(255,255,255,0.05); }
-.check-circle-pro { width: 22px; height: 22px; border: 2px solid #30363d; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.goal-line.completed span { text-decoration: line-through; opacity: 0.5; }
-.goal-line.completed .check-circle-pro { background: var(--green); border-color: var(--green); }
-.goal-line.completed .check-circle-pro::after { content: '✓'; color: white; font-size: 12px; }
+/* 7. BOTÃO FLUTUANTE (FAB) */
+.fab-wrapper { position: fixed; bottom: 30px; right: 30px; z-index: 5000; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.fab-options { 
+    display: flex; flex-direction: column; gap: 10px; 
+    opacity: 0; visibility: hidden; transform: translateY(15px); transition: 0.3s;
+}
+.fab-wrapper.active .fab-options { opacity: 1; visibility: visible; transform: translateY(0); }
 
-/* 4. RESPONSIVIDADE (MOBILE) */
+.fab-option { display: flex; align-items: center; gap: 10px; }
+.fab-label { background: white; color: #000; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; }
+.fab-mini { width: 45px; height: 45px; border-radius: 50%; border: none; color: white; cursor: pointer; font-weight: 800; }
+
+.fab-main { 
+    width: 60px; height: 60px; background: var(--green); border-radius: 50%; 
+    border: none; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+}
+
+/* 8. MODAL BOTTOM SHEET */
+.modal-bottom {
+    position: fixed; bottom: -100%; left: 0; width: 100%; 
+    background: #1c2128; border-radius: 20px 20px 0 0; padding: 25px;
+    transition: 0.4s ease; z-index: 10000;
+}
+.modal-bottom.active { bottom: 0; }
+
+/* 9. RESPONSIVIDADE CELULAR */
 @media (max-width: 1024px) {
-    .sidebar { position: fixed; transform: translateX(-100%); left: 0; z-index: 9999; }
+    .sidebar { position: fixed; transform: translateX(-100%); left: 0; transition: 0.3s; }
     .sidebar.active { transform: translateX(0); }
-    .main-dashboard-grid { grid-template-columns: 1fr; }
-    .mobile-header { display: flex; padding: 15px; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
-    .mobile-only-btn { display: block; }
-}
-
-/* 6. FLOATING ACTION BUTTON EXPANSÍVEL (SPEED DIAL) */
-.fab-wrapper {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 15px;
-    z-index: 9999;
-}
-
-/* Container das opções que sobem */
-.fab-options {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 12px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.fab-option {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-}
-
-/* Etiquetas (Saída / Entrada) */
-.fab-label {
-    background: white;
-    color: #0d1117;
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    white-space: nowrap;
-}
-
-/* Botões menores */
-.fab-mini {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.fab-mini:active { transform: scale(0.9); }
-.fab-mini.red { background: var(--red); }
-.fab-mini.green { background: var(--green); }
-
-/* Botão Principal (Gira e muda de cor quando aberto) */
-.fab-main {
-    width: 60px;
-    height: 60px;
-    background-color: var(--green);
-    color: white;
-    font-size: 30px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
-}
-
-.icon-plus { 
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-/* --- ESTADO ATIVO (QUANDO CLICADO) --- */
-.fab-wrapper.active .fab-options {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.fab-wrapper.active .fab-main {
-    background-color: #5d6d7e; /* Cor acinzentada do ícone de fechar */
-}
-
-.fab-wrapper.active .icon-plus {
-    transform: rotate(45deg); /* O sinal de + vira um X */
-}
-
-/* Ajustes Mobile */
-@media (max-width: 768px) {
-    .fab-wrapper { bottom: 20px; right: 20px; }
-    .fab-mini { width: 42px; height: 42px; }
+    .mobile-header { display: flex; padding: 15px; background: var(--card-dark); align-items: center; justify-content: space-between; }
 }
