@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0d1117">
     <title>Prosperium Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
@@ -13,45 +14,44 @@
 
     <div id="sideMenu" class="sidebar">
         <div class="sidebar-user">
-            <div class="avatar-circle">F</div>
+            <div class="avatar-circle">D</div>
             <div>
-                <h4 id="userNameDisplay">Olá, Danilo!</h4>
-                <span>Bem-vindo de volta</span>
+                <h4 id="sideUserName">Danilo</h4>
+                <span>Prosperium Pro</span>
             </div>
         </div>
         <nav class="side-nav">
-            <a href="#" class="nav-item active">📊 Dashboard</a>
-            <a href="#" class="nav-item">💸 Transações</a>
-            <a href="#" class="nav-item">💳 Cartões</a>
-            <a href="#" class="nav-item">🎯 Metas</a>
-            <a href="#" class="nav-item">📈 Relatórios</a>
-            <a href="#" class="nav-item" id="linkConfig">⚙️ Configurações</a>
+            <a href="#" class="nav-item active" onclick="location.reload()">📊 Dashboard</a>
+            <a href="#" class="nav-item" id="linkCardSetup">💳 Configurar Cartão</a>
+            <a href="#" class="nav-item" id="linkConfig">⚙️ Ajustes de Conta</a>
+            <hr style="border: 0.5px solid #30363d; margin: 10px 0;">
+            <a href="#" class="nav-item" style="color: #ff4d4d;" onclick="resetApp()">⚠️ Resetar Tudo</a>
         </nav>
     </div>
+
+    <div class="menu-overlay" id="overlay"></div>
 
     <main class="main-content">
         <header class="top-bar">
             <button id="openMenu">☰</button>
-            <div class="date-display">
-                <span id="currentMonth">Março 2026</span>
-            </div>
+            <div class="date-display">Março 2026</div>
         </header>
 
         <section class="summary-grid">
             <div class="summary-card green">
-                <span>Entradas do Mês</span>
+                <span>Entradas</span>
                 <h2 id="totalIn">R$ 0,00</h2>
             </div>
             <div class="summary-card red">
-                <span>Saídas à Vista</span>
+                <span>Saídas</span>
                 <h2 id="totalOut">R$ 0,00</h2>
             </div>
             <div class="summary-card blue">
-                <span>Total Investido</span>
+                <span>Investido</span>
                 <h2 id="totalInv">R$ 0,00</h2>
             </div>
             <div class="summary-card white">
-                <span>Saldo Disponível</span>
+                <span>Saldo Real</span>
                 <h2 id="mainBalance">R$ 0,00</h2>
             </div>
         </section>
@@ -62,24 +62,71 @@
                 <div class="gauge-container">
                     <div id="gaugePointer" class="pointer"></div>
                 </div>
-                <p id="gaugeStatus">Crítico</p>
+                <p id="gaugeStatus">Calculando...</p>
             </div>
 
             <div class="widget cards-widget">
-                <h4>Cartões de Crédito</h4>
-                <div class="card-item">
-                    <div class="card-brand">Mastercard</div>
-                    <div class="card-val">
-                        <span>Fatura atual</span>
-                        <strong id="cardBill">R$ 0,00</strong>
-                    </div>
+                <div class="card-header-info">
+                    <h4>Cartão de Crédito</h4>
+                    <span id="cardAlert" style="font-size: 0.6rem;">Limite OK</span>
                 </div>
-                <div class="card-alert">Próximo do limite</div>
+                <h2 id="cardBill">R$ 0,00</h2>
+                <div class="card-progress-container">
+                    <div id="cardProgress" class="card-progress-fill"></div>
+                </div>
+                <div class="card-footer-info">
+                    <span>Limite disponível</span>
+                    <strong id="cardAvailable">R$ 0,00</strong>
+                </div>
             </div>
         </section>
 
         <button class="fab-main" id="fabAdd">+</button>
     </main>
+
+    <div id="entryModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2 id="entryTitle">Novo Lançamento</h2>
+            <div class="input-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="entryValue" placeholder="0,00" inputmode="decimal">
+            </div>
+            
+            <div class="input-group">
+                <label>Tipo de Registro</label>
+                <select id="entryType">
+                    <option value="in">💰 Entrada (Ganho/Vale)</option>
+                    <option value="out">💸 Saída (Gasto)</option>
+                </select>
+            </div>
+
+            <div class="input-group" id="paymentMethodGroup">
+                <label>Forma de Pagamento</label>
+                <select id="entryMethod">
+                    <option value="cash">💵 Dinheiro / Débito</option>
+                    <option value="credit">💳 Cartão de Crédito</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeAllModals()">Voltar</button>
+                <button class="btn-confirm" id="saveEntry">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cardModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2>Configurar Cartão</h2>
+            <div class="input-group"><label>Limite Total</label><input type="number" id="limitInput"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeAllModals()">Sair</button>
+                <button class="btn-confirm" id="saveCardConfig">Salvar</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>
