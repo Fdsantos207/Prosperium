@@ -57,7 +57,6 @@
                 </div>
 
                 <div class="main-dashboard-grid">
-                    
                     <div class="dashboard-col">
                         <section class="summary-grid-pro">
                             <div class="summary-card-pro green"><span>Entradas do Mês</span><h2 id="totalIn">R$ 0,00</h2></div>
@@ -89,7 +88,7 @@
                             <h4>🌡️ TERMÔMETRO FINANCEIRO</h4>
                             <div class="gauge-container-pro">
                                 <div class="gauge-arc"></div>
-                                <div id="gaugePointerPro" class="pointer-pro" style="transform: rotate(-90deg);"></div>
+                                <div id="gaugePointerPro" class="pointer-pro"></div>
                             </div>
                             <h5 id="gaugeStatus">0% - Crítico</h5>
                         </div>
@@ -164,6 +163,35 @@
 
             <button class="fab-main" id="fabAdd">+</button>
         </main>
+    </div>
+
+    <div id="entryModal" class="modal-bottom">
+        <div class="modal-handle"></div>
+        <div class="modal-content">
+            <h2>Novo Lançamento</h2>
+            <div class="input-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="entryValue" placeholder="0,00" inputmode="decimal">
+            </div>
+            <div class="input-group">
+                <label>Tipo</label>
+                <select id="entryType">
+                    <option value="out">💸 Saída (Gasto)</option>
+                    <option value="in">💰 Entrada (Ganho)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Pagamento</label>
+                <select id="entryMethod">
+                    <option value="cash">💵 Dinheiro / Débito</option>
+                    <option value="credit">💳 Cartão de Crédito</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeAllModals()">Cancelar</button>
+                <button class="btn-confirm" id="saveEntry">Salvar</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>

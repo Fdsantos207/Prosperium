@@ -150,3 +150,45 @@ td { padding: 15px; border-bottom: 1px solid #30363d; font-size: 0.85rem; }
     .mobile-header { display: flex; padding: 15px; justify-content: space-between; align-items: center; border-bottom: 1px solid #30363d; }
     .mobile-only-btn { display: block; }
 }
+
+/* 6. FLOATING ACTION BUTTON (FAB) */
+.fab-main {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--green);
+    color: white;
+    font-size: 30px;
+    font-weight: 300; /* Deixa o símbolo + mais fino e elegante */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Sombra projetada para dar profundidade como na foto */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); 
+    z-index: 5000; /* Garante que fique acima de tudo no dashboard */
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.fab-main:hover {
+    background-color: #248a39; /* Verde levemente mais escuro ao passar o mouse */
+    transform: scale(1.05);
+}
+
+.fab-main:active {
+    transform: scale(0.95); /* Efeito de clique */
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 768px) {
+    .fab-main {
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+    }
+}

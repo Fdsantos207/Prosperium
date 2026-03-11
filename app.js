@@ -1,5 +1,5 @@
-/* PROSPERIUM PRO - CORE ENGINE (V.4.5)
-   Focus: Interactive Goals, Budget Logic & UI Sync
+/* PROSPERIUM PRO - CORE ENGINE (V.4.6)
+   Focus: FAB Integration & UI Sync
 */
 
 const state = {
@@ -69,7 +69,7 @@ const updateUI = () => {
 // --- LOGICA DE METAS ---
 window.toggleGoal = (element, index) => {
     state.goals[index] = !state.goals[index];
-    save(); // Salva e atualiza o visual
+    save(); 
 };
 
 const renderGoals = () => {
@@ -129,6 +129,7 @@ const resetApp = () => {
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
 
+    // Menu hambúrguer mobile
     document.getElementById('openMenu').onclick = () => {
         document.getElementById('sideMenu').classList.add('active');
         document.getElementById('overlay').classList.add('active');
@@ -138,9 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeMenuBtn) closeMenuBtn.onclick = closeAllModals;
 
     document.getElementById('overlay').onclick = closeAllModals;
-    document.getElementById('fabAdd').onclick = () => openModal('entryModal');
+
+    // BOTÃO FAB (+) - Abre o modal de entrada
+    const fabAdd = document.getElementById('fabAdd');
+    if (fabAdd) {
+        fabAdd.onclick = () => openModal('entryModal');
+    }
+
     document.getElementById('linkCardSetup').onclick = (e) => { e.preventDefault(); openModal('cardModal'); };
     
+    // Salvar nova transação do Modal
     document.getElementById('saveEntry').onclick = () => {
         const valInput = document.getElementById('entryValue');
         const val = parseFloat(valInput.value);
@@ -156,7 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.getElementById('saveCardConfig').onclick = () => {
-        state.cardConfig.limit = parseFloat(document.getElementById('limitInput').value) || 0;
+        const limitInput = document.getElementById('limitInput');
+        state.cardConfig.limit = parseFloat(limitInput.value) || 0;
         save();
         closeAllModals();
     };
