@@ -151,44 +151,109 @@ td { padding: 15px; border-bottom: 1px solid #30363d; font-size: 0.85rem; }
     .mobile-only-btn { display: block; }
 }
 
-/* 6. FLOATING ACTION BUTTON (FAB) */
-.fab-main {
+/* 6. FLOATING ACTION BUTTON EXPANSÍVEL (SPEED DIAL) */
+.fab-wrapper {
     position: fixed;
     bottom: 30px;
     right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+    z-index: 9999;
+}
+
+/* Container das opções que sobem */
+.fab-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fab-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+/* Etiquetas (Saída / Entrada) */
+.fab-label {
+    background: white;
+    color: #0d1117;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    white-space: nowrap;
+}
+
+/* Botões menores */
+.fab-mini {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.fab-mini:active { transform: scale(0.9); }
+.fab-mini.red { background: var(--red); }
+.fab-mini.green { background: var(--green); }
+
+/* Botão Principal (Gira e muda de cor quando aberto) */
+.fab-main {
     width: 60px;
     height: 60px;
     background-color: var(--green);
     color: white;
     font-size: 30px;
-    font-weight: 300; /* Deixa o símbolo + mais fino e elegante */
     border: none;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Sombra projetada para dar profundidade como na foto */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); 
-    z-index: 5000; /* Garante que fique acima de tudo no dashboard */
-    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
 }
 
-.fab-main:hover {
-    background-color: #248a39; /* Verde levemente mais escuro ao passar o mouse */
-    transform: scale(1.05);
+.icon-plus { 
+    display: inline-block;
+    transition: transform 0.3s ease;
 }
 
-.fab-main:active {
-    transform: scale(0.95); /* Efeito de clique */
+/* --- ESTADO ATIVO (QUANDO CLICADO) --- */
+.fab-wrapper.active .fab-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
-/* Ajuste para telas menores */
+.fab-wrapper.active .fab-main {
+    background-color: #5d6d7e; /* Cor acinzentada do ícone de fechar */
+}
+
+.fab-wrapper.active .icon-plus {
+    transform: rotate(45deg); /* O sinal de + vira um X */
+}
+
+/* Ajustes Mobile */
 @media (max-width: 768px) {
-    .fab-main {
-        bottom: 20px;
-        right: 20px;
-        width: 55px;
-        height: 55px;
-    }
+    .fab-wrapper { bottom: 20px; right: 20px; }
+    .fab-mini { width: 42px; height: 42px; }
 }

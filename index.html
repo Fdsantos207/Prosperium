@@ -161,7 +161,21 @@
                 </section>
             </div>
 
-            <button class="fab-main" id="fabAdd">+</button>
+            <div class="fab-wrapper" id="fabWrapper">
+                <div class="fab-options">
+                    <div class="fab-option" onclick="openModal('entryModal', 'out')">
+                        <span class="fab-label">Saída</span>
+                        <button class="fab-mini red">−</button>
+                    </div>
+                    <div class="fab-option" onclick="openModal('entryModal', 'in')">
+                        <span class="fab-label">Entrada</span>
+                        <button class="fab-mini green">+</button>
+                    </div>
+                </div>
+                <button class="fab-main" id="fabMainBtn">
+                    <span class="icon-plus">+</span>
+                </button>
+            </div>
         </main>
     </div>
 

@@ -1,5 +1,5 @@
-/* PROSPERIUM PRO - CORE ENGINE (V.4.6)
-   Focus: FAB Integration & UI Sync
+/* PROSPERIUM PRO - CORE ENGINE (V.4.7)
+   Focus: Speed Dial FAB Logic & Modal Context
 */
 
 const state = {
@@ -59,10 +59,8 @@ const updateUI = () => {
         status.style.color = ratio > 80 ? "#da3633" : (ratio > 50 ? "#f1c40f" : "#2ea043");
     }
 
-    // 4. Renderizar Metas e Tabela
     renderGoals();
     renderTransactions();
-
     document.getElementById('sideUserName').innerText = `Olá, ${state.userName}!`;
 };
 
@@ -80,7 +78,6 @@ const renderGoals = () => {
     });
 };
 
-// --- RENDERIZAR TABELA ---
 const renderTransactions = () => {
     const txBody = document.getElementById('txBody');
     if (txBody) {
@@ -101,14 +98,23 @@ const renderTransactions = () => {
 };
 
 // --- MODAL & SIDEBAR ---
-const openModal = (id) => {
+// Ajustado para receber o tipo (in/out) e pré-selecionar no select
+window.openModal = (id, type = null) => {
     const modal = document.getElementById(id);
     const overlay = document.getElementById('overlay');
+    
+    if (type && id === 'entryModal') {
+        document.getElementById('entryType').value = type;
+    }
+
     if (modal && overlay) {
         modal.classList.add('active');
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
+    // Fecha o menu FAB ao abrir qualquer modal
+    const fabWrapper = document.getElementById('fabWrapper');
+    if (fabWrapper) fabWrapper.classList.remove('active');
 };
 
 const closeAllModals = () => {
@@ -129,7 +135,7 @@ const resetApp = () => {
 document.addEventListener('DOMContentLoaded', () => {
     updateUI();
 
-    // Menu hambúrguer mobile
+    // Menu Mobile
     document.getElementById('openMenu').onclick = () => {
         document.getElementById('sideMenu').classList.add('active');
         document.getElementById('overlay').classList.add('active');
@@ -140,15 +146,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('overlay').onclick = closeAllModals;
 
-    // BOTÃO FAB (+) - Abre o modal de entrada
-    const fabAdd = document.getElementById('fabAdd');
-    if (fabAdd) {
-        fabAdd.onclick = () => openModal('entryModal');
+    // LÓGICA DO FAB EXPANSÍVEL
+    const fabWrapper = document.getElementById('fabWrapper');
+    const fabMainBtn = document.getElementById('fabMainBtn');
+
+    if (fabMainBtn) {
+        fabMainBtn.onclick = (e) => {
+            e.stopPropagation();
+            fabWrapper.classList.toggle('active');
+        };
     }
+
+    // Fecha o FAB ao clicar fora
+    window.addEventListener('click', () => {
+        if (fabWrapper) fabWrapper.classList.remove('active');
+    });
 
     document.getElementById('linkCardSetup').onclick = (e) => { e.preventDefault(); openModal('cardModal'); };
     
-    // Salvar nova transação do Modal
+    // Salvar Lançamento
     document.getElementById('saveEntry').onclick = () => {
         const valInput = document.getElementById('entryValue');
         const val = parseFloat(valInput.value);
